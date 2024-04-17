@@ -1,4 +1,4 @@
-# Generate cleaned Public Use File for Data Catalog and use in feature
+# Generate cleaned Public Use File according to UrbanInstitute variables
 library(tidyverse)
 library(readxl)
 library(testit)
@@ -9,24 +9,23 @@ library(httr)
 library(here)
 library(janitor)
 options(timeout = 200)
-setwd("~/dev/pulse")
 
 ui_vars <- c("week_num",
   "hisp_rrace",
   "uninsured",
   "insured_public",
-  "inc_loss", 
-  "inc_loss_rv", 
+  "inc_loss",
+  "inc_loss_rv",
   "expect_inc_loss",
-  "payment_not_conf", 
-  "rent_not_conf", 
+  "payment_not_conf",
+  "rent_not_conf",
   "mortgage_not_conf",
   "rent_caughtup",
-  "mortgage_caughtup", 
+  "mortgage_caughtup",
   "food_insufficient",
   "spend_savings",
   "spend_credit",
-  "spend_ui", 
+  "spend_ui",
   "spend_stimulus",
   "anxious_score",
   "worry_score",
@@ -34,18 +33,18 @@ ui_vars <- c("week_num",
   "down_score",
   "anxiety_signs",
   "depression_signs",
-  "depression_anxiety_signs", 
+  "depression_anxiety_signs",
   "expense_dif",
   "telework",
   "metalhealth_unmet",
-  "eviction_risk", 
+  "eviction_risk",
   "foreclosure_risk",
   "learning_fewer",
   "spend_snap",
   "week_num",
   "state",
   "state_name",
-  "csa_title", 
+  "csa_title",
   "cbsa_title"
 )
 
@@ -73,48 +72,48 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
   #   20) indicator variable for if a person used stimulus payment to meet spending needs in past 7 days (spend_stimulus)
   #   21) indicator variable for if a person not caught up on rent is somewhat likely or very likely to be evicted in next two months (eviction_risk)
   #   22) indicator variable for if a person not caught up on mortgage is somewhat likely or very likely to be foreclosed on in next two months (foreclosure_risk)
-  
-  
+
+
   # INPUT:
   #   week_num (num): week number of Pulse survey (ie 13, 14, 15..., etc). Can be a vector if
-  #     you want to pull data for multiple weeks. Should only be used for questionnaire 2 
+  #     you want to pull data for multiple weeks. Should only be used for questionnaire 2
   #     week 13 or greater.
   #   output_filepaths (chr): Output folder where puf file and data dictionary
   #     be written to
   # OUPUT:
   #   df_clean: cleaned pubilc use file
   #   This fxn will also write out the raw downlaoded public use files into the data/raw-data directory
-  
+
   week_num_padded <- str_pad(week_num, width = 2, side = "left", pad = "0")
-  
+
   # account for year changes
-  year <- case_when(week_num < 22 ~ 2020, 
+  year <- case_when(week_num < 22 ~ 2020,
                     week_num >= 22 & week_num < 41 ~ 2021,
                     week_num >= 41 & week_num < 52 ~ 2022,
                     week_num >= 52 & week_num <= 63 ~ 2023)
-  
-  
+
+
   puf_url <- str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/wk{week_num}/HPS_Week{week_num_padded}_PUF_CSV.zip")
-  
+
   # Create public_use_files directory if it doesn't exist
   dir.create("data/raw-data/public_use_files/", showWarnings = F)
-  
+
   # Download zip file
   if(!file.exists(str_glue("data/raw-data/public_use_files/week_{week_num_padded}.zip"))){
     download.file(puf_url,
                   destfile = str_glue("data/raw-data/public_use_files/week_{week_num_padded}.zip"),
                   # By default uses winnet method which is for some reason very slow
                   method = "libcurl"
-                  
+
     )
-    
+
   }
-  
+
   #Note: data dictionaries change naming conventions within phase 2 due to December
   # update, we accordingly default to extracting all files without names
   unzip(str_glue("data/raw-data/public_use_files/week_{week_num_padded}.zip"),
         exdir = "data/raw-data/public_use_files")
-  
+
   # Get MSA FIPS Codes for appending later
   fips_msa_url <- "https://query.data.world/s/vn4chhniqhslgt5fpb7swxbkcsq3oj"
   GET(fips_msa_url, write_disk(tf <- tempfile(fileext = ".xls")))
@@ -122,15 +121,15 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
     select("CBSA Code", "CSA Title", "CBSA Title") %>%
     # There seem to be some duplicate entries, so we remove them
     distinct(.keep_all = TRUE)
-  
+
   ### Read in PUF file
   # week_num 52 wrongly formatted, is 2022 but says 2023
   year_path <- ifelse(week_num == 52, 2022, year)
   puf_filepath <- str_glue("{output_filepath}pulse{year_path}_puf_{week_num_padded}.csv")
   df <- read_csv(puf_filepath)
-  
+
   #Phase 2 (Week 13-17) and phase 3 (Week 18-27)
-  
+
   if (week_num <= 27) {
     df <- df %>%
       mutate(spndsrc9 = NA_real_,
@@ -138,9 +137,9 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              spndsrc11 = NA_real_,
              spndsrc12 = NA_real_)
   }
-  
-  #Phase 3.1: Week 28-33  
-  
+
+  #Phase 3.1: Week 28-33
+
   if (week_num > 27 & week_num <= 33) {
     df <- df %>%
       rename(WRKLOSS = WRKLOSSRV) %>%
@@ -150,9 +149,9 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              spndsrc11 = NA_real_,
              spndsrc12 = NA_real_)
   }
-  
+
   #Phase 3.2: Week 34-39
-  
+
   if (week_num > 33 & week_num <= 39) {
     df <- df %>%
       rename(WRKLOSS = WRKLOSSRV,
@@ -172,9 +171,9 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              tw_start = NA_real_,
              tch_hrs = NA_real_)
   }
-  
+
   #Phase 3.3: Week 40 - 42
-  
+
   if (week_num > 39 & week_num <= 42) {
     df <- df %>%
       rename(WRKLOSS = WRKLOSSRV,
@@ -194,9 +193,9 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              tw_start = NA_real_,
              tch_hrs = NA_real_)
   }
-  
+
   #Phase 3.4: Week 43-45
-  
+
   if (week_num > 42 & week_num <= 45) {
     df <- df %>%
       rename(WRKLOSS = WRKLOSSRV,
@@ -216,12 +215,12 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              tw_start = NA_real_,
              tch_hrs = NA_real_)
   }
-  
+
   #Phase 3.5: Week 46-48
   #Question about confidence making next rent or mortgage payment (mortconf)
   #dropped from survey. Question about receiving needed mental healthcare
   #(mh_notget) dropped from survey.
-  
+
   if (week_num > 45 & week_num <= 48) {
     df <- df %>%
       rename(WRKLOSS = WRKLOSSRV,
@@ -243,7 +242,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              mortconf = NA_real_,
              mh_notget = NA_real_)
   }
-  
+
   #Phase 3.6: Week 49-51
   #Updates to spending questions, no longer asking about stimulus (SPNDSRC6) or child tax credit (SPNDSRC7)
   if (week_num > 48 & week_num <= 51) {
@@ -267,7 +266,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   #Phase 3.7: Week 52-54
   if (week_num > 51 & week_num <= 54) {
     df <- df %>%
@@ -290,7 +289,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   #Phase 3.8: Week 55-57
   if (week_num > 54 & week_num <= 57) {
     df <- df %>%
@@ -313,7 +312,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   #Phase 3.9: Week 58-60
   if (week_num > 57 & week_num <= 60) {
     df <- df %>%
@@ -336,7 +335,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   #Phase 3.10: Week 61-63
   if (week_num > 60 & week_num <= 63) {
     df <- df %>%
@@ -359,7 +358,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   df_clean <- df %>%
     janitor::clean_names() %>%
     ### Append Urban specific columns
@@ -397,19 +396,19 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
            hlthins6 == 2) ~ 1,
         # Note Census includes those who have Indian Health Service coverage as uninsured (1)
         hlthins7 == 1 ~ 1,
-        
+
         TRUE ~ NA_real_
       ),
       # Dummy var for respondents with public insurance
       insured_public = case_when(
         # if they have medicare, medicaid, or VA insurance = 1
         hlthins3 == 1 | hlthins4 == 1 | hlthins6 == 1 ~ 1,
-        
+
         # if they didn't answer any of the helath insurance questions& assign them NA
         hlthins1 == -99 & hlthins2 == -99 & hlthins3 == -99 &
           hlthins4 == -99 & hlthins5 == -99 & hlthins6 == -99 &
           hlthins7 == -99 & hlthins8 == -99 ~ NA_real_,
-        
+
         hlthins1 == -88 & hlthins2 == -88 & hlthins3 == -88 &
           hlthins4 == -88 & hlthins5 == -88 & hlthins6 == -88 &
           hlthins7 == -88 & hlthins8 == -88 ~ NA_real_,
@@ -477,7 +476,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
         #set 1 if respondent answered they use credit cards or loans
         spndsrc2 == 1 ~ 1,
         # Set 0 if respondent answered atleast one of the spending questions
-        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 | 
+        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 |
            spndsrc5 >= 0 | spndsrc6 >= 0 | spndsrc7 >= 0| spndsrc8 >= 0 |
            spndsrc9 >= 0 | spndsrc10 >= 0 | spndsrc11 >= 0 | spndsrc12 >= 0) ~ 0,
         # Set NA otherwise
@@ -487,7 +486,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
         #set 1 if respondent answered they use savings or selling assets
         spndsrc3 == 1 ~ 1,
         # Set 0 if respondent answered at least one of the spending questions
-        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 | 
+        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 |
            spndsrc5 >= 0 | spndsrc6 >= 0 | spndsrc7 >= 0| spndsrc8 >= 0|
            spndsrc9 >= 0 | spndsrc10 >= 0 | spndsrc11 >= 0 | spndsrc12 >= 0) ~ 0,
         # Set NA otherwise
@@ -497,7 +496,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
         #set 1 if respondent answered they use creditcards or loans
         spndsrc5 == 1 ~ 1,
         # Set 0 if respondent answered at least one of the spending questions
-        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 | 
+        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 |
            spndsrc5 >= 0 | spndsrc6 >= 0 | spndsrc7 >= 0| spndsrc8 >= 0|
            spndsrc9 >= 0 | spndsrc10 >= 0 | spndsrc11 >= 0 | spndsrc12 >= 0) ~ 0,
         # Set NA otherwise
@@ -507,7 +506,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
         #set 1 if respondent answered they use creditcards or loans
         spndsrc6 == 1 ~ 1,
         # Set 0 if respondent answered atleast one of the child education questions
-        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 | 
+        (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 |
            spndsrc5 >= 0 | spndsrc6 >= 0 | spndsrc7 >= 0| spndsrc8 >= 0|
            spndsrc9 >= 0 | spndsrc10 >= 0 | spndsrc11 >= 0 | spndsrc12 >= 0) ~ 0,
         # Set NA otherwise
@@ -563,14 +562,14 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
       ),
       #dummy for eviction risk
       # this question was asked of everyone who answered rentcur == 2 and tenure == 3,
-      # or that they are renters and they are not caught up on rent. 
+      # or that they are renters and they are not caught up on rent.
       eviction_risk = case_when(evict %in% c(1, 2) ~ 1,
                                 evict %in% c(3, 4) ~ 0,
                                 TRUE ~ NA_real_
       ),
       #dummy for foreclosure risk
       # this question was asked of everyone who answered mortcur == 2 and tenure == 2,
-      # or that they pay mortgages and are not caught up on mortgages. 
+      # or that they pay mortgages and are not caught up on mortgages.
       foreclosure_risk = case_when(forclose %in% c(1, 2) ~ 1,
                                    forclose %in% c(3, 4) ~ 0,
                                    TRUE ~ NA_real_
@@ -583,7 +582,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
       ),
       #SNAP spending
       spend_snap = case_when(spndsrc8 == 1 ~ 1,
-                             (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 | 
+                             (spndsrc1 >= 0 | spndsrc2 >= 0 | spndsrc3 >= 0 | spndsrc4 >= 0 |
                                 spndsrc5 >= 0 | spndsrc6 >= 0 | spndsrc7 >= 0 | spndsrc8 >= 0 |
                                 spndsrc9 >= 0 | spndsrc10 >= 0 | spndsrc11 >= 0 | spndsrc12 >= 0) ~ 0
       )
@@ -635,10 +634,10 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
     ### Append Replicate Weights
     janitor::clean_names() %>%
     select(any_of(vars))
-  
+
   # Check that cleanded data has same number of rows as raw data
   assert("Cleaned df has same # of rows as raw data", nrow(df) == nrow(df_clean))
-  
+
   return(df_clean)
 }
 
@@ -689,7 +688,6 @@ appended_column_data_dictionary <-
     "state_name", "The full name of the state that respondents are from",
     "csa_title", "The name of the larger Combined statistical area that the respondent is from. Note the Census only reports the Metropolitan Statistical Area (aks the CBSA)",
     "cbsa_title", "The full name of the Core based statistical area that the respondent is from"
-    
   )
 
 # Write out data dictionary
@@ -699,26 +697,48 @@ write_csv(
 )
 
 puf_all_weeks <- read_csv("data/intermediate-data/pulse_puf2_all_weeks.csv")
+
+# get pct missing for each week by each variable
 all_missing <- puf_all_weeks %>%
   group_by(week_num) %>%
   summarise(across(.cols = where(is.numeric), .fns = ~mean(is.na(.x))))
 
+# get number of obs that are missing all variables for each week
 num_all_missing <- all_missing %>%
   pivot_longer(-week_num, names_to = "variable", values_to = "pct_missing") %>%
   group_by(week_num) %>%
   summarise(n_all_missing = sum(pct_missing == 1))
 
 # look at differences with adding new phase
+phase_diff <- function (wk1, wk2) {
+  week_nums <- c(deparse(substitute(wk1)), deparse(substitute(wk2)))
+  all_missing %>%
+    filter(week_num %in% week_nums) %>%
+    pivot_longer(-week_num, names_to = "variable", values_to = "pct_missing") %>%
+    pivot_wider(names_from = "week_num", values_from = "pct_missing") %>%
+    filter({{ wk1 }} == 1 | {{ wk2 }} == 1, {{ wk1 }} != {{ wk2 }})
+}
+
 # phase 3.3 to 3.4
-dif_42_43 <- all_missing %>%
-  filter(week_num %in% c("wk42", "wk43")) %>%
-  pivot_longer(-week_num, names_to = "variable", values_to = "pct_missing") %>%
-  pivot_wider(names_from = "week_num", values_from = "pct_missing") %>%
-  filter(wk42 == 1 | wk43 == 1, wk42 != wk43)
+phase_diff(wk42, wk43)
 
 #phase 3.4 to 3.5
-dif_45_46 <- all_missing %>%
-  filter(week_num %in% c("wk45", "wk46")) %>%
-  pivot_longer(-week_num, names_to = "variable", values_to = "pct_missing") %>%
-  pivot_wider(names_from = "week_num", values_from = "pct_missing") %>%
-  filter(wk45 == 1 | wk46 == 1, wk45 != wk46)
+phase_diff(wk45, wk46)
+
+#phase 3.5 to 3.6
+phase_diff(wk48, wk49)
+
+#phase 3.6 to 3.7
+phase_diff(wk51, wk52)
+
+#phase 3.7 to 3.8
+phase_diff(wk54, wk55)
+
+#phase 3.8 to 3.9
+phase_diff(wk57, wk58)
+
+#phase 3.9 to 3.10
+phase_diff(wk60, wk61)
+
+
+

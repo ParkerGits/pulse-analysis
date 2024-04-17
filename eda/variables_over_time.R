@@ -1,6 +1,6 @@
 puf_all_weeks <- read_csv("data/intermediate-data/pulse_puf2_all_weeks.csv")
 
-phase_breaks = c("wk13", "wk18", "wk28", "wk34", t(distinct(food_insufficient_by_week_race["week_num"]))[seq(28,50,3)])
+phase_breaks = c("wk13", "wk18", "wk28", "wk34", t(distinct(puf_all_weeks["week_num"]))[seq(28,50,3)])
 week_labels = c("08/19/2020",
                 "10/28/2020",
                 "04/14/2021",
@@ -16,12 +16,13 @@ week_labels = c("08/19/2020",
 phase_labels = c("Phase 2", "Phase 3", paste("Phase 3.", 1:10, sep=""))
 
 
-plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phase_y = 0.80) {
-  food_insufficient_by_week_race <- puf_all_weeks |>
-    group_by(week_num, hisp_rrace) %>%
-    summarize(mean_column = mean({{column}}, na.rm = T))
+plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phase_y = 0.80, y_upper = NA) {
+  variable_by_week_race <- puf_all_weeks |>
+    group_by(week_num, hisp_rrace) |>
+    summarize(mean_variable = mean({{variable}}, na.rm = T))
   
-  p <- ggplot(food_insufficient_by_week_race, aes(x=week_num, y=mean_column, color = hisp_rrace, group = hisp_rrace)) +
+  
+  p <- ggplot(variable_by_week_race, aes(x=week_num, y=mean_variable, color = hisp_rrace, group = hisp_rrace)) +
     geom_vline(xintercept = phase_breaks, color = "lightgrey", linetype="dashed") +
     geom_line() +
     geom_point() +
@@ -31,6 +32,7 @@ plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phas
     labs(title = title,
          x = "Date",
          y = y) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
   for (i in 1:12) {
     p <- p + annotate("text", x=phase_breaks[i], label=paste("\n", phase_labels[i], " Begins", sep=""), y=phase_y, colour="lightgrey", angle=90)
@@ -39,15 +41,13 @@ plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phas
   p  
 }
 
-plot_column_by_week_race(food_insufficient,
+plot_variable_by_week_race(food_insufficient,
                          y = "Food Insufficiency Rate",
-                         title = "Share of adults in households where there was often or sometimes not enough food in the past week, by race",
+                         title = "Share of adults in households where there was often or sometimes not enough\nfood in the past week, by race",
                          phase_y = 0.075)
 
-plot_column_by_week_race(depression_anxiety_signs,
+plot_variable_by_week_race(depression_anxiety_signs,
                          y = "Depression/Anxiety Rate",
                          title = "Share of adults that experienced symptoms of depression or anxiety disorders\nin the past week (phases 2, 3, and 3.1) or in the last two weeks (phases 3.2-3.10)",
                          phase_y = 0.4)
-  
-      
 

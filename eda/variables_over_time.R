@@ -23,7 +23,7 @@ plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phas
   
   
   p <- ggplot(variable_by_week_race, aes(x=week_num, y=mean_variable, color = hisp_rrace, group = hisp_rrace)) +
-    geom_vline(xintercept = phase_breaks, color = "lightgrey", linetype="dashed") +
+    geom_vline(xintercept = phase_breaks, color = "gray", linetype="dashed") +
     geom_line() +
     geom_point() +
     scale_x_discrete(breaks=phase_breaks, labels = week_labels) +

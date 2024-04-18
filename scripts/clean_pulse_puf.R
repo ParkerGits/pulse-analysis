@@ -10,7 +10,9 @@ library(here)
 library(janitor)
 options(timeout = 200)
 
-ui_vars <- c("week_num",
+ui_vars <- c(
+  # added by UI
+  "week_num",
   "hisp_rrace",
   "uninsured",
   "insured_public",
@@ -45,7 +47,11 @@ ui_vars <- c("week_num",
   "state",
   "state_name",
   "csa_title",
-  "cbsa_title"
+  "cbsa_title",
+  # not added but included in UI analyses
+  "mentalhealth_unmet",
+  "expense_dif",
+  "tenure"
 )
 
 download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepath = "data/raw-data/public_use_files/") {
@@ -614,15 +620,14 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
       ),
       # Turn MSA column into character
       est_msa = as.character(est_msa),
+      # split inc_loss variable to reflect change in the survey question beginning
+      # in week 28 (see data dictionary for details)
+      inc_loss_rv = case_when(week_num >= 28 ~ as.numeric(inc_loss),
+                              TRUE ~ NA_real_),
+      inc_loss = case_when(week_num >= 28 ~ NA_real_,
+                           TRUE ~ as.numeric(inc_loss)),
       # Add week_number column
       week_num = paste0("wk", week_num)
-    ) %>%
-    # split inc_loss variable to reflect change in the survey question beginning
-    # in week 28 (see data dictionary for details)
-    mutate(inc_loss_rv = case_when(week_num >= 28 ~ as.numeric(inc_loss),
-                                   TRUE ~ NA_real_),
-           inc_loss = case_when(week_num >= 28 ~ NA_real_,
-                                TRUE ~ as.numeric(inc_loss))
     ) %>%
     ### Append full state names
     left_join(tigris::fips_codes %>% select(state, state_code, state_name) %>%
@@ -631,11 +636,10 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
     ) %>%
     ### Append MSA Names
     left_join(msa_fips_codes, by = c("est_msa" = "CBSA Code")) %>%
-    ### Append Replicate Weights
     janitor::clean_names() %>%
     select(any_of(vars))
 
-  # Check that cleanded data has same number of rows as raw data
+  # Check that cleaned data has same number of rows as raw data
   assert("Cleaned df has same # of rows as raw data", nrow(df) == nrow(df_clean))
 
   return(df_clean)
@@ -643,6 +647,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
 
 
 week_vec <- 13:63
+puf_all_weeks <- map_df(week_vec, download_and_clean_puf_data)
 
 # Create public_use_files directory if it doesn't exist
 dir.create("data/intermediate-data", showWarnings = F)

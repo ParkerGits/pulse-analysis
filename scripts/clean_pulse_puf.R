@@ -4,13 +4,16 @@ library(readxl)
 library(testit)
 library(tigris)
 library(stringr)
-library(tidyverse)
 library(httr)
 library(here)
 library(janitor)
 options(timeout = 200)
 
 ui_vars <- c(
+  # numeric week
+  "week_x",
+  # year
+  "year",
   # added by UI
   "week_num",
   "hisp_rrace",
@@ -51,7 +54,10 @@ ui_vars <- c(
   # not added but included in UI analyses
   "mentalhealth_unmet",
   "expense_dif",
-  "tenure"
+  "tenure",
+  "tbirth_year",
+  "scram",
+  "pweight"
 )
 
 download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepath = "data/raw-data/public_use_files/") {
@@ -626,7 +632,11 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
                               TRUE ~ NA_real_),
       inc_loss = case_when(week_num >= 28 ~ NA_real_,
                            TRUE ~ as.numeric(inc_loss)),
-      # Add week_number column
+      # Add numeric year column
+      year = year,
+      # Add numeric week number column
+      week_x = week_num,
+      # Add string week num column
       week_num = paste0("wk", week_num)
     ) %>%
     ### Append full state names
@@ -649,10 +659,13 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
 week_vec <- 13:63
 puf_all_weeks <- map_df(week_vec, download_and_clean_puf_data)
 
+# single week
+# puf_all_weeks <- map_df(33:34, download_and_clean_puf_data)
+
 # Create public_use_files directory if it doesn't exist
 dir.create("data/intermediate-data", showWarnings = F)
 
-write_csv(puf_all_weeks, here("data/intermediate-data", "pulse_puf2_cur_week.csv"))
+write_csv(puf_all_weeks, here("data/intermediate-data", "pulse_puf2_all_weeks.csv"))
 
 # Manually generate and write out data dictionary for appended columns
 appended_column_data_dictionary <-

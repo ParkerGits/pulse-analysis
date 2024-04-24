@@ -54,7 +54,7 @@ puf_all_weeks <- read_csv(here("data/intermediate-data", "pulse_puf2_all_weeks.c
          spend_savings = as.numeric(spend_savings),
          spend_stimulus = as.numeric(spend_stimulus),
          spend_ui = as.numeric(spend_ui),
-         inc_loss = as.numeric(inc_loss), 
+         inc_loss = as.numeric(inc_loss),
          inc_loss_rv = as.numeric(inc_loss_rv)) %>%
   #create combined inc_loss variable for efficient processing
   mutate(inc_loss = case_when(week_x >= 28 ~ inc_loss_rv,
@@ -166,10 +166,10 @@ get_se_diff_total <- function(..., svy) {
   # if race indicator is total, then we compute mean of the geography,
   # and compare it to the mean of national estimates
   dots <- list(...)
-  
+
   geo_formula <- as.formula(paste0("~", dots$geo_col))
   metric_formula <- as.formula(paste0("~", dots$metric))
-  
+
   result <- tryCatch(
     {
       x <- svyby(metric_formula, geo_formula, svy,
@@ -178,7 +178,7 @@ get_se_diff_total <- function(..., svy) {
                  return.replicates = T,
                  covmat = T
       )
-      
+
       mean <- x %>%
         filter(!!sym(dots$geo_col) == 1) %>%
         pull(!!sym(dots$metric))
@@ -191,7 +191,7 @@ get_se_diff_total <- function(..., svy) {
       other_se <- x %>%
         filter(!!sym(dots$geo_col) == 0) %>%
         pull(se)
-      
+
       # Use svycontrast to calculate se bw geography and national estimates
       contrast <- svycontrast(x, contrasts = list(diff = c(1, -1)))
       diff_mean <- contrast %>% as.numeric()
@@ -200,8 +200,8 @@ get_se_diff_total <- function(..., svy) {
         sqrt() %>%
         {
           . * 2
-        }  
-      
+        }
+
       result <- tibble(
         mean = mean,
         se = se,
@@ -237,13 +237,13 @@ get_se_diff <- function(..., svy) {
   #    metric/week combination, plus mean/SE for all other races and mean/SE for
   #    the difference between the given race and all other races
   dots <- list(...)
-  
+
   metric_formula <- as.formula(paste0("~", dots$metric))
   race_formula <- as.formula(paste0("~", dots$race_indicator))
-  
-  
+
+
   #compare subgroup to geography avg
-  
+
   # Use trycatch bc there are 4 metric-week-geogarphy combinations
   # where there are 0 respondents which return NA and error out
   result <- tryCatch(
@@ -256,7 +256,7 @@ get_se_diff <- function(..., svy) {
                  return.replicates = T,
                  covmat = T
       )
-      
+
       mean <- x %>%
         filter(!!sym(dots$race_indicator) == 1) %>%
         pull(!!sym(dots$metric))
@@ -269,7 +269,7 @@ get_se_diff <- function(..., svy) {
       other_se <- x %>%
         filter(!!sym(dots$race_indicator) == 0) %>%
         pull(se)
-      
+
       # Use svycontrast to calulate se bw race and nonrace (ie black and non black) population
       contrast <- svycontrast(x, contrasts = list(diff = c(1, -1)))
       diff_mean <- contrast %>% as.numeric()
@@ -279,8 +279,8 @@ get_se_diff <- function(..., svy) {
         {
           . * 2
         }
-      
-      
+
+
       result <- tibble(
         mean = mean,
         se = se,
@@ -318,8 +318,8 @@ generate_se_state_and_cbsas <- function(metrics, race_indicators, df) {
   #    full_combo_appended: dataframe with mean/SE for each geography/race
   #    metric/week combination, plus mean/SE for all other races and mean/SE for
   #    the difference between the given race and all other races
-  
-  
+
+
   svy <- df %>%
     as_survey_rep(
       repweights = dplyr::matches("pweight[0-9]+"),
@@ -327,7 +327,7 @@ generate_se_state_and_cbsas <- function(metrics, race_indicators, df) {
       type = "BRR",
       mse = TRUE
     )
-  
+
   # cbsa_names <- svy %>%
   #   pull(cbsa_title) %>%
   #   unique() %>%
@@ -344,32 +344,32 @@ generate_se_state_and_cbsas <- function(metrics, race_indicators, df) {
   # )
   # # crosswalk between geography names and geography dummy column names
   # geo_xwalk <- tibble(geography = geography, geo_col = geo_cols)
-  
+
   wk <- svy %>%
     pull(week_num) %>%
     unique() %>%
     na.omit()
-  
+
   geo <- svy %>%
     pull(geography) %>%
     unique() %>%
     na.omit()
-  
+
   geo_type <- svy %>%
     pull(geo_type) %>%
     unique() %>%
     na.omit()
-  
+
   # Create grid of all metric/race combos for the geo/week dataframe
   full_combo <- expand_grid(
     metric = metrics,
     race_indicator = race_indicators
-  ) 
-  
+  )
+
   #for testing (as running on all combinations takes up too much RAM)
-  #full_combo = full_combo %>% 
+  #full_combo = full_combo %>%
   #   filter(metric %in% c("telework"))
-  
+
   # get mean and se for diff bw subgroup and (total population -subgroup)
   # Call the get_se_diff function on every row of full_combo
   se_info <- full_combo %>% pmap_df(get_se_diff, svy = svy)
@@ -378,7 +378,7 @@ generate_se_state_and_cbsas <- function(metrics, race_indicators, df) {
     mutate(geo_type = geo_type,
            geography = geo,
            week_num = wk)
-  
+
   return(full_combo_appended)
 }
 
@@ -394,8 +394,8 @@ generate_se_state_and_cbsas_total <- function(metrics, df) {
   #    full_combo_appended: dataframe with mean/SE for each geography/race
   #    metric/week combination, plus mean/SE for all other races and mean/SE for
   #    the difference between the given race and all other races
-  
-  
+
+
   svy <- df %>%
     as_survey_rep(
       repweights = dplyr::matches("pweight[0-9]+"),
@@ -403,7 +403,7 @@ generate_se_state_and_cbsas_total <- function(metrics, df) {
       type = "BRR",
       mse = TRUE
     )
-  
+
   cbsa_names <- svy %>%
     pull(cbsa_title) %>%
     unique() %>%
@@ -420,26 +420,26 @@ generate_se_state_and_cbsas_total <- function(metrics, df) {
   )
   # crosswalk between geography names and geography dummy column names
   geo_xwalk <- tibble(geography = geography, geo_col = geo_cols)
-  
+
   wk_num <- svy %>%
     pull(week_num) %>%
     unique() %>%
     na.omit()
-  
+
   print(wk_num)
-  
-  
+
+
   # Create grid of all metric/race/geo/week combos
   full_combo <- expand_grid(
     metric = metrics,
     geo_col = geo_cols
   ) %>%
     left_join(geo_xwalk, by = "geo_col")
-  
+
   #for testing (as running on all combinations takes up too much RAM)
-  #full_combo = full_combo %>% 
+  #full_combo = full_combo %>%
   #   filter(metric %in% c("telework"))
-  
+
   # get mean and se for diff bw subgroup and (total population -subgroup)
   # Call the get_se_diff function on every row of full_combo
   se_info <- full_combo %>% pmap_df(get_se_diff_total, svy = svy)
@@ -449,7 +449,7 @@ generate_se_state_and_cbsas_total <- function(metrics, df) {
            race_indicator = "total",
            week_num = wk_num)%>%
     select(-geo_col)
-  
+
   return(full_combo_appended)
 }
 
@@ -467,10 +467,10 @@ get_se_diff_us <- function(..., svy = svy_all) {
   #    combination for the US, plus mean/SE for all other races and mean/SE for
   #    the difference between the given race and all other races
   dots <- list(...)
-  
+
   metric_formula <- as.formula(paste0("~", dots$metric))
   race_formula <- as.formula(paste0("~", dots$race_indicator))
-  
+
   result <- tryCatch(
     {
       x <- svyby(metric_formula, race_formula, svy %>%
@@ -480,7 +480,7 @@ get_se_diff_us <- function(..., svy = svy_all) {
                  return.replicates = T,
                  covmat = T
       )
-      
+
       mean <- x %>%
         filter(!!sym(dots$race_indicator) == 1) %>%
         pull(!!sym(dots$metric))
@@ -493,7 +493,7 @@ get_se_diff_us <- function(..., svy = svy_all) {
       other_se <- x %>%
         filter(!!sym(dots$race_indicator) == 0) %>%
         pull(se)
-      
+
       # Use svycontrast to calulate se bw race and nonrace (ie black and non black) population
       contrast <- svycontrast(x, contrasts = list(diff = c(1, -1)))
       diff_mean <- contrast %>% as.numeric()
@@ -503,7 +503,7 @@ get_se_diff_us <- function(..., svy = svy_all) {
         {
           . * 2
         }
-      
+
       result <- tibble(
         mean = mean,
         se = se,
@@ -526,7 +526,7 @@ get_se_diff_us <- function(..., svy = svy_all) {
     }
   )
   return(result)
-  
+
 }
 
 generate_se_us <- function(metrics, race_indicators, svy = svy_all) {
@@ -541,24 +541,24 @@ generate_se_us <- function(metrics, race_indicators, svy = svy_all) {
   #    full_combo_appended: dataframe with mean/SE for each race/metric/week
   #    combination for the US, plus mean/SE for all other races and mean/SE for
   #    the difference between the given race and all other races
-  
+
   wks <- svy %>%
     pull(week_num) %>%
     unique() %>%
     na.omit()
-  
+
   #race_indicators <- race_indicators[-6]
-  
+
   full_combo <- expand_grid(
     metric = metrics,
     race_indicator = race_indicators,
     week = wks
   )
-  
+
   # filter to new vars/ relevant weeks for testing
-  #full_combo = full_combo %>% 
+  #full_combo = full_combo %>%
   #  filter(week %in% c("wk10_11", "wk11_12"))
-  
+
   # get mean and se for diff bw subgroup and (total population -subgroup)
   se_info <- full_combo %>% pmap_df(get_se_diff_us)
   full_combo_appended <- full_combo %>%
@@ -567,7 +567,7 @@ generate_se_us <- function(metrics, race_indicators, svy = svy_all) {
       geo_type = "national",
       geography = "US"
     )
-  
+
   return(full_combo_appended)
 }
 
@@ -577,7 +577,7 @@ race_indicators <- c("black", "asian", "hispanic", "white", "other")
 #This should be run on a reasonably large machine like a c5.2 instance
 start <- Sys.time()
 plan(multisession, workers = parallel::detectCores() - 2)
-all_diff_ses <- future_map_dfr(all_list, 
+all_diff_ses <- future_map_dfr(all_list,
                                ~generate_se_state_and_cbsas(metrics = metrics,
                                                             race_indicators = race_indicators,
                                                             df = .x))
@@ -586,7 +586,7 @@ print(end - start)
 
 start <- Sys.time()
 plan(sequential)
-all_diff_ses_total <- map_dfr(all_week_list, 
+all_diff_ses_total <- map_dfr(all_week_list,
                               ~generate_se_state_and_cbsas_total(metrics = metrics,
                                                                  df = .x))
 end <- Sys.time()
@@ -609,8 +609,8 @@ write.csv(us_diff_ses, here("data/intermediate-data", "us_diff_ses.csv"))
 calculate_se_us_total <- function(metric, svy) {
   se_df <- svy %>%
     srvyr::filter(!is.na(!!sym(metric))) %>%
-    group_by(week_num) 
-  
+    group_by(week_num)
+
   result <- se_df %>%
     summarise(mean = survey_mean(!!sym(metric), na.rm = TRUE)) %>%
     # pull(out) %>%
@@ -621,7 +621,7 @@ calculate_se_us_total <- function(metric, svy) {
       race_var = "total"
     ) %>%
     select(week_num, geography, race_var, mean, se, metric)
-  
+
   return(result)
 }
 
@@ -634,7 +634,7 @@ format_feature_total <- function(data, geo) {
       geo_type = geo
     ) %>%
     select(geography, metric, week_num, race_var, mean, se, moe_95, moe_95_lb, moe_95_ub, geo_type)
-  
+
   return(data)
 }
 
@@ -642,8 +642,8 @@ format_feature_total <- function(data, geo) {
 # calculate US-wide means for each metric/week
 # starting in week 34, don't include expect_inc_loss
 # starting in week 46, don't include rent_not_conf, mortgage_not_conf, mentalhealth_unmet
-metrics_total <- metrics[!metrics %in% c("telework", 
-                                         "learning_fewer", 
+metrics_total <- metrics[!metrics %in% c("telework",
+                                         "learning_fewer",
                                          "expect_inc_loss",
                                          "rent_not_conf",
                                          "mortgage_not_conf",
@@ -683,16 +683,16 @@ us_diff_ses_out <- us_diff_ses %>%
 
 
 # variables removed between start of questionnaire two and phase 3.5
-phase_3_5_rem_metric <- c("inc_loss", 
-                          "telework", 
-                          "learning_fewer", 
+phase_3_5_rem_metric <- c("inc_loss",
+                          "telework",
+                          "learning_fewer",
                           "expect_inc_loss",
                           "rent_not_conf",
                           "mortgage_not_conf",
                           "mentalhealth_unmet")
 
-us_total_rem <- expand_grid(metric = c("telework", 
-                                       "learning_fewer", 
+us_total_rem <- expand_grid(metric = c("telework",
+                                       "learning_fewer",
                                        "expect_inc_loss",
                                        "rent_not_conf",
                                        "mortgage_not_conf",
@@ -747,7 +747,24 @@ week_crosswalk <- tibble::tribble(
   "wk44", paste("3/30/22\u2013", "4/11/22", sep = ""),
   "wk45", paste("4/27/22\u2013", "5/9/22", sep = ""),
   "wk46", paste("6/1/22\u2013", "6/13/22", sep = ""),
-  "wk47", paste("6/29/22\u2013", "7/11/22", sep = ""))
+  "wk47", paste("6/29/22\u2013", "7/11/22", sep = ""),
+  "wk48", paste("7/27/22\u2013", "8/8/22", sep = ""),
+  "wk49", paste("9/14/22\u2013", "9/28/22", sep = ""),
+  "wk50", paste("10/5/22\u2013", "10/17/22", sep = ""),
+  "wk51", paste("11/2/22\u2013", "11/14/22", sep = ""),
+  "wk52", paste("12/9/22\u2013", "12/19/22", sep = ""),
+  "wk53", paste("1/4/23\u2013", "1/16/23", sep = ""),
+  "wk54", paste("2/1/23\u2013", "2/13/23", sep = ""),
+  "wk55", paste("3/1/23\u2013", "3/13/23", sep = ""),
+  "wk56", paste("3/29/23\u2013", "4/10/23", sep = ""),
+  "wk57", paste("4/26/23\u2013", "5/8/23", sep = ""),
+  "wk58", paste("6/7/23\u2013", "6/19/23", sep = ""),
+  "wk59", paste("6/28/23\u2013", "7/10/23", sep = ""),
+  "wk60", paste("7/26/23\u2013", "8/7/23", sep = ""),
+  "wk61", paste("8/23/23\u2013", "9/4/23", sep = ""),
+  "wk62", paste("9/20/23\u2013", "10/2/23", sep = ""),
+  "wk63", paste("10/18/23\u2013", "10/30/23", sep = ""),
+)
 
 # create data for feature with combined inc_loss and inc_loss_rv metric
 data_out_feature <- left_join(data_all, week_crosswalk, by = "week_num") %>%
@@ -779,22 +796,12 @@ write_csv(data_out_feature, here("data/final-data", str_glue("phase2_wk{CUR_WEEK
 data_out <- data_out %>%
   arrange(metric, race_var, geography,
           factor(week_num,
-                 levels = c("wk13",  "wk14", "wk15", "wk16", "wk17", "wk18",
-                            "wk19", "wk20", "wk21", "wk22", "wk23", "wk24",
-                            "wk25", "wk26",  "wk27", "wk28", "wk29", "wk30",
-                            "wk31", "wk32", "wk33", "wk34", "wk35", "wk36",
-                            "wk37", "wk38", "wk39", "wk40", "wk41", "wk42",
-                            "wk43", "wk44", "wk45", "wk46", "wk47")))
+                 levels = week_crosswalk$week_num))
 
 data_out_feature <- data_out_feature %>%
   arrange(metric, race_var, geography,
           factor(week_num,
-                 levels = c("wk13",  "wk14", "wk15", "wk16", "wk17", "wk18",
-                            "wk19", "wk20", "wk21", "wk22", "wk23", "wk24",
-                            "wk25", "wk26",  "wk27", "wk28", "wk29", "wk30",
-                            "wk31", "wk32", "wk33", "wk34", "wk35", "wk36",
-                            "wk37", "wk38", "wk39", "wk40", "wk41", "wk42",
-                            "wk43", "wk44", "wk45", "wk46", "wk47")))
+                 levels = week_crosswalk$week_num))
 
 write_csv(data_out, here("data/final-data", "phase2_all_to_current_week.csv"))
 write_csv(data_out_feature, here("data/final-data", "phase2_all_to_current_week_feature.csv"))

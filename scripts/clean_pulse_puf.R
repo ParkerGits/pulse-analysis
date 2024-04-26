@@ -53,7 +53,6 @@ ui_vars <- c(
   "cbsa_title",
   # not added but included in UI analyses
   "mentalhealth_unmet",
-  "expense_dif",
   "tenure",
   "tbirth_year",
   "scram",

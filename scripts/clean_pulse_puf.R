@@ -715,6 +715,98 @@ write_csv(
 
 puf_all_weeks <- read_csv("data/intermediate-data/pulse_puf2_all_weeks.csv")
 
+# format puf for data wrangling and analysis
+metrics <- c(
+  "uninsured",
+  "insured_public",
+  "inc_loss",
+  "expect_inc_loss",
+  "rent_not_conf",
+  "mortgage_not_conf",
+  "food_insufficient",
+  "depression_anxiety_signs",
+  "spend_credit",
+  "spend_ui",
+  "spend_stimulus",
+  "spend_savings",
+  "spend_snap",
+  "rent_caughtup",
+  "mortgage_caughtup",
+  "eviction_risk",
+  "foreclosure_risk",
+  "telework",
+  "mentalhealth_unmet",
+  "learning_fewer",
+  "expense_dif"
+)
+
+other_cols <- c(
+  "cbsa_title",
+  "state",
+  "hisp_rrace",
+  "week_num"
+)
+
+race_indicators <- c("black", "asian", "hispanic", "white", "other")
+
+all_cols <- c(metrics, other_cols)
+
+puf_fmt <- puf_all_weeks |>
+  mutate(spend_credit = as.numeric(spend_credit),
+         spend_savings = as.numeric(spend_savings),
+         spend_stimulus = as.numeric(spend_stimulus),
+         spend_ui = as.numeric(spend_ui),
+         inc_loss = as.numeric(inc_loss),
+         inc_loss_rv = as.numeric(inc_loss_rv),
+         #create combined inc_loss variable for efficient processing
+         inc_loss = case_when(week_x >= 28 ~ inc_loss_rv,
+                              TRUE ~ inc_loss),
+         tbirth_year = as.numeric(tbirth_year),
+         # For the uninsured variable, we filter out people over 65 from the denominator
+         insured_public = case_when(
+           tbirth_year < 1956 ~ NA_real_,
+           TRUE ~ as.numeric(insured_public)
+         ),
+         uninsured = case_when(
+           tbirth_year < 1956 ~ NA_real_,
+           TRUE ~ as.numeric(uninsured)
+         ),
+         insured_public = case_when(
+           tbirth_year < 1956 ~ NA_real_,
+           TRUE ~ as.numeric(insured_public)
+         ),
+         uninsured = case_when(
+           tbirth_year < 1956 ~ NA_real_,
+           TRUE ~ as.numeric(uninsured)
+         )) |>
+  select(all_cols, scram, pweight) |>
+  janitor::clean_names() |>
+  # Add race indicator variables for easy use with survey package
+  mutate(
+    black = case_when(
+      str_detect(hisp_rrace, "Black alone") ~ 1,
+      TRUE ~ 0
+    ),
+    white = case_when(
+      str_detect(hisp_rrace, "White") ~ 1,
+      TRUE ~ 0
+    ),
+    hispanic = case_when(
+      str_detect(hisp_rrace, "Latino") ~ 1,
+      TRUE ~ 0
+    ),
+    asian = case_when(
+      str_detect(hisp_rrace, "Asian") ~ 1,
+      TRUE ~ 0
+    ),
+    other = case_when(
+      str_detect(hisp_rrace, "Two or") ~ 1,
+      TRUE ~ 0
+    )
+  )
+
+write_csv(puf_all_weeks, here("data/intermediate-data", "puf_formatted.csv"))
+
 # get pct missing for each week by each variable
 all_missing <- puf_all_weeks %>%
   group_by(week_num) %>%

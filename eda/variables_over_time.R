@@ -1,3 +1,5 @@
+library(tidyverse)
+
 puf_all_weeks <- read_csv("data/intermediate-data/pulse_puf2_all_weeks.csv")
 
 phase_breaks = c("wk13", "wk18", "wk28", "wk34", t(distinct(puf_all_weeks["week_num"]))[seq(28,50,3)])
@@ -19,7 +21,7 @@ phase_labels = c("Phase 2", "Phase 3", paste("Phase 3.", 1:10, sep=""))
 plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phase_y = 0.80, y_upper = NA) {
   variable_by_week_race <- puf_all_weeks |>
     group_by(week_num, hisp_rrace) |>
-    summarize(mean_variable = mean({{variable}}, na.rm = T))
+    summarize(mean_variable = mean(!!sym(variable), na.rm = T))
   
   
   p <- ggplot(variable_by_week_race, aes(x=week_num, y=mean_variable, color = hisp_rrace, group = hisp_rrace)) +
@@ -41,13 +43,14 @@ plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phas
   p  
 }
 
-plot_variable_by_week_race(food_insufficient,
+plot_variable_by_week_race("food_insufficient",
                          y = "Food Insufficiency Rate",
                          title = "Share of adults in households where there was often or sometimes not enough\nfood in the past week, by race",
                          phase_y = 0.075)
 
-plot_variable_by_week_race(depression_anxiety_signs,
+plot_variable_by_week_race("depression_anxiety_signs",
                          y = "Depression/Anxiety Rate",
                          title = "Share of adults that experienced symptoms of depression or anxiety disorders\nin the past week (phases 2, 3, and 3.1) or in the last two weeks (phases 3.2-3.10)",
                          phase_y = 0.4)
 
+ggsave("test.png")

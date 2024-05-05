@@ -1,8 +1,3 @@
-data
-.DS_STORE
-.RData
-.Rhistory
-
 # Logs
 logs
 *.log

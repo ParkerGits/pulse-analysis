@@ -160,7 +160,7 @@ weekly_handler <- list(
     response_filepath <- here("server", "tmp", paste0(metric, ".png"))
     if (!file.exists(response_filepath)) {
       plot_variable_by_week_race(metric)
-      ggsave(response_filepath)
+      ggsave(response_filepath, create.dir = TRUE)
     }
     response_png <- read_file_raw(response_filepath)
     return(list(

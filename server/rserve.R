@@ -11,7 +11,7 @@ if (!require(tidyverse)) {
   require(tidyverse)
 }
 
-data_path <- here("server", "data", "phase2_all.csv")
+data_path <- here("server", "static", "phase2_all.csv")
 pulse <- read_csv(data_path)
 
 phase_breaks <- c("wk13", "wk18", "wk28", "wk34", t(distinct(pulse["week_num"]))[seq(28,50,3)])

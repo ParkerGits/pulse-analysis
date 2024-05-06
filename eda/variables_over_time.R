@@ -1,6 +1,6 @@
 library(tidyverse)
 
-puf_all_weeks <- read_csv("data/intermediate-data/pulse_puf2_all_weeks.csv")
+puf_all_weeks <- read_csv("data/final-data/phase2_all.csv")
 
 phase_breaks = c("wk13", "wk18", "wk28", "wk34", t(distinct(puf_all_weeks["week_num"]))[seq(28,50,3)])
 week_labels = c("08/19/2020",
@@ -20,11 +20,10 @@ phase_labels = c("Phase 2", "Phase 3", paste("Phase 3.", 1:10, sep=""))
 
 plot_variable_by_week_race <- function (variable, y = "", title = waiver(), phase_y = 0.80, y_upper = NA) {
   variable_by_week_race <- puf_all_weeks |>
-    group_by(week_num, hisp_rrace) |>
-    summarize(mean_variable = mean(!!sym(variable), na.rm = T))
+    filter(metric == variable, geo_type == "national")
   
   
-  p <- ggplot(variable_by_week_race, aes(x=week_num, y=mean_variable, color = hisp_rrace, group = hisp_rrace)) +
+  p <- ggplot(variable_by_week_race, aes(x=week_num, y=mean, color = race_var, group = race_var)) +
     geom_vline(xintercept = phase_breaks, color = "gray", linetype="dashed") +
     geom_line() +
     geom_point() +
@@ -53,4 +52,4 @@ plot_variable_by_week_race("depression_anxiety_signs",
                          title = "Share of adults that experienced symptoms of depression or anxiety disorders\nin the past week (phases 2, 3, and 3.1) or in the last two weeks (phases 3.2-3.10)",
                          phase_y = 0.4)
 
-ggsave("test.png")
+read_file_raw("test.png")

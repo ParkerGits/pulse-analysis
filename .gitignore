@@ -2,6 +2,7 @@ data
 .DS_STORE
 .RData
 .Rhistory
+tmp
 
 # Logs
 logs

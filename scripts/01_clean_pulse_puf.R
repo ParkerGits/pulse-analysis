@@ -849,5 +849,3 @@ phase_diff(wk57, wk58)
 #phase 3.9 to 3.10
 phase_diff(wk60, wk61)
 
-
-

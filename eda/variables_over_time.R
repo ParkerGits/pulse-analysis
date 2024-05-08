@@ -51,5 +51,5 @@ plot_variable_by_week_race("depression_anxiety_signs",
                          y = "Depression/Anxiety Rate",
                          title = "Share of adults that experienced symptoms of depression or anxiety disorders\nin the past week (phases 2, 3, and 3.1) or in the last two weeks (phases 3.2-3.10)",
                          phase_y = 0.4)
-
+ggsave("test.png")
 read_file_raw("test.png")

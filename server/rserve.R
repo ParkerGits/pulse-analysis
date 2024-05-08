@@ -211,11 +211,6 @@ weekly_handler <- list(
       }
     }
 
-    # difference between max and min should be at least one
-    if (week_max_num - week_min_num < 1) {
-      return(http_bad_request)
-    }
-
     # get geography from query string
     geography <- query[["geography"]]
     # if null, default to first geography

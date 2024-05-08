@@ -6,6 +6,7 @@ import buildPlotUrl from "./lib/buildPlotUrl";
 import { Button } from "./components/ui/button";
 import { WEEK_NUM_MAX, WEEK_NUM_MIN } from "./lib/constants";
 import MetricComboBox from "./components/metric-combo-box";
+import { TypographyH2 } from "./components/typography-h2";
 
 export default function Component() {
   const [geography, setGeography] = useState<string>("US");
@@ -33,7 +34,7 @@ export default function Component() {
           </div>
         </div>
         <div className="prose prose-gray max-w-none">
-          <h2>Abstract</h2>
+          <TypographyH2>Abstract</TypographyH2>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida
             nibh pretium, iaculis lorem quis, vestibulum leo. Quisque vel turpis
@@ -49,7 +50,7 @@ export default function Component() {
             ultrices posuere cubilia curae; Vivamus cursus blandit enim quis
             auctor.
           </p>
-          <h2>Introduction</h2>
+          <TypographyH2>Introduction</TypographyH2>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida
             nibh pretium, iaculis lorem quis, vestibulum leo. Quisque vel turpis
@@ -65,7 +66,7 @@ export default function Component() {
             ultrices posuere cubilia curae; Vivamus cursus blandit enim quis
             auctor.
           </p>
-          <h2>Methods</h2>
+          <TypographyH2>Methods</TypographyH2>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida
             nibh pretium, iaculis lorem quis, vestibulum leo. Quisque vel turpis
@@ -81,7 +82,7 @@ export default function Component() {
             ultrices posuere cubilia curae; Vivamus cursus blandit enim quis
             auctor.
           </p>
-          <h2>Results</h2>
+          <TypographyH2>Results</TypographyH2>
           <div className="flex flex-col items-center space-y-4">
             <RaceToggleGroup onValueChange={setRaces} />
             <WeekSlider onValueChange={setWeeks} value={weeks} />
@@ -102,7 +103,7 @@ export default function Component() {
             <img src={plotUrl} />
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2"></div>
-          <h2>Discussion</h2>
+          <TypographyH2>Discussion</TypographyH2>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed
             fringilla nibh. Mauris auctor eros lectus, in tincidunt diam

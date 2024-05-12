@@ -113,7 +113,7 @@ phase_3_5_rem_metric <- c("inc_loss",
                           "mortgage_not_conf",
                           "mentalhealth_unmet")
 
-data_out <- data_out |>
+data_out <- data_out_feature |>
   mutate(
     var_removed = case_when((metric %in% phase_3_5_rem_metric)  ~ 1,
                             TRUE ~ 0)
@@ -121,6 +121,14 @@ data_out <- data_out |>
   arrange(metric, race_var, geography,
           factor(week_num,
                  levels = week_crosswalk$week_num))
+
+# combine inc_loss with inc_loss_rv for feature
+inc_loss_rv <- data_out_feature %>%
+  filter(metric == "inc_loss") %>%
+  mutate(metric = "inc_loss_rv")
+data_out <- rbind(data_out_feature, inc_loss_rv) |>
+  filter(metric != "inc_loss")
+
 
 dir.create("data/final-data", showWarnings = F)
 

@@ -10,6 +10,10 @@ if (!require(tidyverse)) {
   install.packages("tidyverse")
   require(tidyverse)
 }
+if (!require(sf)) {
+  install.packages("sf")
+  require(sf)
+}
 
 data_path <- here("server", "static", "phase2_all.csv")
 pulse <- read_csv(data_path)
@@ -17,10 +21,8 @@ pulse <- read_csv(data_path)
 metrics <- c(
   "uninsured",
   "insured_public",
-  "inc_loss",
   "inc_loss_rv",
   "expect_inc_loss",
-  "payment_not_conf",
   "rent_not_conf",
   "mortgage_not_conf",
   "rent_caughtup",
@@ -30,35 +32,65 @@ metrics <- c(
   "spend_credit",
   "spend_ui",
   "spend_stimulus",
-  "anxious_score",
-  "worry_score",
-  "interest_score",
-  "down_score",
-  "anxiety_signs",
-  "depression_signs",
   "depression_anxiety_signs",
   "expense_dif",
   "telework",
   "eviction_risk",
   "foreclosure_risk",
-  "learning_fewer",
-  "spend_snap"
+  "spend_snap",
+  "mentalhealth_unmet"
 )
 
-var_title_list <- list(
-  "food_insufficient" = "Mean share of adults in households where there was often or sometimes not enough food\nin the past week by Race, per Week",
-  "depression_anxiety_signs" = "Mean share of adults that experienced symptoms of depression or anxiety disorders\nin the last week by Race, per Week",
-  "expense_dif" = "Mean share of adults that experienced difficulty paying household expenses in past 7 days\nby Race, per Week"
+metric_title_list <- list(
+  depression_anxiety_signs = "Percentage of adults that have shown\ndepression or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-3.10)",
+  eviction_risk = "Percentage of adults in households at high risk\nof being evicted in the next two months",
+  expect_inc_loss = "Percentage of adults in households where at least one person\nexpects to lose employment income in the next four weeks\n(question removed in phase 3.2)",
+  expense_dif = "Percentage of adults in households have had difficulty\npaying for usual household expenses",
+  food_insufficient = "Percentage of adults in households where there was\noften or sometimes not enough food in the past week",
+  foreclosure_risk = "Percentage of adults in households at high risk\nof being foreclosed in the next two months",
+  inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks (phases 3.1-3.10)",
+  insured_public = "Percentage of adults under 65 that have public health insurance",
+  mentalhealth_unmet = "Percentage of adults that needed but did not get\ncounseling or therapy from a mental health professional in the past 4 weeks,\nfor any reason (question removed in phase 3.5)",
+  mortgage_caughtup = "Percentage of adults in households that are\ncurrently caught up on mortgage payments",
+  mortgage_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their mortgage next month\nor have deferred payment (question removed in phase 3.5)",
+  rent_caughtup = "Percentage of adults in households that are\ncurrently caught up on rent payments",
+  rent_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their rent next month\nor have deferred payment (question removed in phase 3.5)",
+  spend_credit = "Percentage of adults that have used credit cards or loans spending to meet\ntheir weekly needs in the past 7 days",
+  spend_savings = "Percentage of adults that used savings or sold assets to meet\ntheir spending needs in the past week",
+  spend_snap = "Percentage of adults that have used SNAP to meet\ntheir spending needs in the past 7 days",
+  spend_stimulus = "Percentage of adults that used stimulus payments to meet\ntheir spending needs in the past week",
+  spend_ui = "Percentage of adults that used unemployment insurance (UI) benefits\nto meet their spending needs in the past week",
+  telework = "Percentage of adults in households where at least one adult\nwhose work is typically in-person has begun working online\nbecause of the COVID-19 pandemic (question removed in phase 3.1)",
+  uninsured = "Percentage of adults under 65 that are uninsured"
 )
 
-var_ylab_list <- list(
+weekly_metric_ylab_list <- list(
   "food_insufficient" = "Food Insufficiency Rate",
   "depression_anxiety_signs" = "Depression/Anxiety Rate",
-  "expense_dif" = "Expense Difficulty Rate"
+  "expense_dif" = "Expense Difficulty Rate",
+  "uninsured" = "Uninsured Rate",
+  "insured_public" = "Public Health Insurance Rate",
+  "inc_loss_rv" = "Percent Experienced Income Loss",
+  "expect_inc_loss" = "Percent Expecting Income Loss",
+  "rent_not_conf" = "Rent Payment Uncertainty Rate",
+  "mortgage_not_conf" = "Mortgage Payment Uncertainty Rate",
+  "rent_caughtup" = "Rent Payment Caught Up Rate",
+  "mortgage_caughtup" = "Mortgage Payment Caught Up Rate",
+  "spend_savings" = "Percent Spending Savings",
+  "spend_credit" = "Percent Spending Credit",
+  "spend_ui" = "Percent Spending UI",
+  "spend_stimulus" = "Percent Spending Stimulus",
+  "telework" = "Remote Work Rate",
+  "eviction_risk" = "Eviction Risk Rate",
+  "foreclosure_risk" = "Foreclosure Risk Rate",
+  "spend_snap" = "Percent Spending SNAP",
+  "mentalhealth_unmet" = "Mental Health Needs Unmet Rate"
 )
 
 all_races <- c("white", "black", "hispanic", "other", "asian", "total")
-all_weeks <- 13:63
+all_weeks_min <- 13
+all_weeks_max <- 63
+all_weeks <- all_weeks_min:all_weeks_max
 all_geographies <- c(
   "US",
   "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
@@ -74,8 +106,22 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
   week_breaks <- pulse$week_num[week_seq]
   week_labels <- pulse$date_int[week_seq]
 
-  title <- var_title_list[[var]]
-  ylab <- var_ylab_list[[var]]
+  title <- metric_title_list[[var]]
+  ylab <- weekly_metric_ylab_list[[var]]
+
+
+  weekly_plot_theme <- function() {
+    theme(
+      axis.title.x = element_text(family = "Helvetica", face = "bold", size = 8),
+      axis.title.y = element_text(family = "Helvetica", face = "bold", size = 8),
+      axis.text.x = element_text(family = "Helvetica", size = 6, angle = 45, hjust = 1),
+      axis.text.y = element_text(family = "Helvetica", size = 6),
+      plot.title = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
+      plot.subtitle = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
+      legend.text = element_text(face = "italic", family = "Helvetica"),
+      legend.title = element_text(family = "Helvetica"),
+    )
+  }
 
   pulse |>
     filter(geography == geo_var, metric == var, week_num %in% filtered_week_nums, race_var %in% race_vars) |>
@@ -86,9 +132,56 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
     scale_x_discrete(breaks = week_breaks, labels = week_labels) +
     scale_fill_discrete(name = "Race") +
     scale_color_discrete(name = "Race") +
-    labs(x = "Week",
+    weekly_plot_theme() +
+    labs(
+         x = "Week",
          y = ylab,
-         title = title)
+         title = title,
+         subtitle = "By Race, per Week"
+    )
+}
+
+usa_sf <- function() {
+  sf_path <- here("server", "static", "states_sf.rda")
+  us <- read_rds(sf_path)
+
+  # 4326 for laea
+  return(sf::st_transform(us, crs = 4326))
+}
+us_states <- usa_sf()
+
+plot_state_map <- function(race, week, variable) {
+  week_str <- str_glue("wk{week}")
+  data <- pulse |>
+    filter(metric == variable, week_num == week_str, race_var == race) |>
+    left_join(us_states, c("geography" = "iso_3166_2"))
+
+  national_map_theme <- function() {
+    theme(
+      panel.background = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      axis.title = element_blank(),
+      plot.title = element_text(family = "Helvetica", face = "bold", size = 12, hjust = 0.5),
+      plot.subtitle = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
+      legend.text = element_text(face = "italic", family = "Helvetica"),
+    )
+  }
+
+  mini <- round(min(data$se, na.rm = TRUE), digits = 4)
+  middle <- round(mean(data$mean, na.rm = TRUE), digits = 4)
+  firstq <- round(mean(data$mean, na.rm = TRUE) + sd(data$mean, na.rm = TRUE), digits = 4)
+  thirdq <- round(mean(data$mean, na.rm = TRUE) - sd(data$mean, na.rm = TRUE), digits = 4)
+  maxi <- round(max(data$mean, na.rm = TRUE),digits = 4)
+
+  graph <- data |>
+    ggplot() +
+    geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
+    scale_fill_continuous(element_blank(), low = "white", high = "darkgreen", breaks = c(mini, firstq, middle, thirdq, maxi), limits = c(mini,maxi), labels = scales::percent) +
+    national_map_theme() +
+    labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
+
+  graph
 }
 
 port <- 8080
@@ -192,21 +285,29 @@ weekly_handler <- list(
     # get weeks from query string
     week_min <- query[["week_min"]]
     # if null, default to first in all_weeks, otherwise parse
-    week_min_num <- all_weeks[1]
+    week_min_num <- all_weeks_min
     if (!is.null(week_min)) {
       week_min_num <- as.numeric(week_min)
       # error if not numeric
       if (is.na(week_min_num)) {
         return(http_bad_request)
       }
+      # error if too small
+      if (week_min_num < all_weeks_min) {
+        return(http_bad_request)
+      }
     }
 
     week_max <- query[["week_max"]]
-    week_max_num <- all_weeks[length(all_weeks)]
+    week_max_num <- all_weeks_max
     if (!is.null(week_max)) {
       week_max_num <- as.numeric(week_max)
       # error if not numeric
       if (is.na(week_max_num)) {
+        return(http_bad_request)
+      }
+      # error if too big
+      if (week_max_num > all_weeks_max) {
         return(http_bad_request)
       }
     }
@@ -223,8 +324,9 @@ weekly_handler <- list(
       return(http_bad_request)
     }
 
-    response_filename <- paste0(paste(metric_var, paste0(race_list_str, collapse = "-"), week_min_num, week_max_num, geography_var, sep = "-"), ".png")
-    response_filepath <- here("server", "tmp", response_filename)
+    response_filename <- paste(metric_var, paste0(race_list_str, collapse = "-"), week_min_num, week_max_num, geography_var, sep = "-") |>
+      paste0(".png")
+    response_filepath <- here("server", "tmp", "weekly", response_filename)
     # if img file does not exist, plot and save it
     if (!file.exists(response_filepath)) {
       plot_estimates_for_var_state_time(var = metric_var, race_vars = race_list_str, week_nums = week_min_num:week_max_num, geo = geography_var)
@@ -234,7 +336,7 @@ weekly_handler <- list(
     return(list(
       status = 200,
       headers = list(
-        "Content-Type" = "image/png"
+        "content-type" = "image/png"
       ),
       body = response_png
     ))
@@ -242,8 +344,72 @@ weekly_handler <- list(
   # POST = function (request) { ... }
 )
 
+national_handler <- list(
+  GET = function(request) {
+    query <- parse_query_string(request$QUERY_STRING)
+
+    # get metric from query string
+    metric <- query[["metric"]]
+    # if null, default to first metric
+    metric_var <- metrics[1]
+    if (!is.null(metric)) {
+      metric_var <- metric
+    }
+    # provided metric should be one of available metrics
+    if (!metric_var %in% metrics) {
+      return(http_bad_request)
+    }
+
+    # get week from query string
+    week <- query[["week"]]
+    # if null, default to last week
+    week_num <- all_weeks_max
+    if (!is.null(week)) {
+      week_num <- as.numeric(week)
+      # error if not numeric
+      if (is.na(week_num)) {
+        return(http_bad_request)
+      }
+      # error if outside range of all_weeks
+      if (week_num > all_weeks_max | week_num < all_weeks_min) {
+        return(http_bad_request)
+      }
+    }
+
+    # get race from query string
+    race <- query[["race"]]
+    # if null, default to first race
+    race_var <- all_races[1]
+    if (!is.null(race)) {
+      race_var <- race
+    }
+    # provided race should be a subset of available races
+    if (!race_var %in% all_races) {
+      return(http_bad_request)
+    }
+
+    response_filename <- paste(metric_var, race_var, week_num, sep = "-") |>
+      paste0(".png")
+    response_filepath <- here("server", "tmp", "national", response_filename)
+    if (!file.exists(response_filepath)) {
+      plot_state_map(race_var, week_num, metric_var)
+      ggsave(response_filepath, create.dir = TRUE)
+    }
+    response_png <- read_file_raw(response_filepath)
+
+    return(list(
+      status = 200,
+      headers = list(
+        "content-type" = "image/png"
+      ),
+      body = response_png
+    ))
+  }
+)
+
 routes <- list(
   "/weekly" = weekly_handler,
+  "/national" = national_handler,
   # Required by App Engine.
   "/_ah/health" = list(
     GET = function(request) list()

@@ -9,11 +9,11 @@ import { TypographyH3 } from "./typography-h3";
 
 export default function NationalPlotSection() {
   const [metric, setMetric] = useState<string>("food_insufficient");
-  const [week, setWeek] = useState<number>(WEEK_NUM_MAX);
+  const [week, setWeek] = useState<number[]>([WEEK_NUM_MAX]);
   const [race, setRace] = useState<string>("white");
 
   const [plotUrl, setPlotUrl] = useState<string>(
-    buildNationalPlotUrl(week, race, metric),
+    buildNationalPlotUrl(week[0], race, metric),
   );
 
   return (
@@ -25,7 +25,9 @@ export default function NationalPlotSection() {
         <div className="flex flex-row items-center space-x-4">
           <MetricComboBox metric={metric} onMetricSelect={setMetric} />
           <Button
-            onClick={() => setPlotUrl(buildNationalPlotUrl(week, race, metric))}
+            onClick={() =>
+              setPlotUrl(buildNationalPlotUrl(week[0], race, metric))
+            }
           >
             Plot
           </Button>

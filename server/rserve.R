@@ -102,9 +102,15 @@ all_geographies <- c(
 
 plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_geographies[1], week_nums = all_weeks, race_vars = all_races) {
   filtered_week_nums = str_glue("wk{week_nums}")
-  week_seq <- seq(1, length(filtered_week_nums), ceiling(length(filtered_week_nums)/10))
-  week_breaks <- pulse$week_num[week_seq]
-  week_labels <- pulse$date_int[week_seq]
+
+  # format breaks/labels so that x-axis contains, at most, 11 evenly spaced x-axis labels
+  week_step <- ceiling(length(filtered_week_nums)/11)
+  week_seq <- seq(1, length(filtered_week_nums), week_step)
+  week_breaks <- filtered_week_nums[week_seq]
+  week_labels <- pulse |>
+    filter(week_num %in% week_breaks) |>
+    pull(date_int) |>
+    unique()
 
   title <- metric_title_list[[var]]
   ylab <- weekly_metric_ylab_list[[var]]

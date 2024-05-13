@@ -52,9 +52,15 @@ plot_estimates_for_var_state(std_err_significance,
 
 plot_estimates_for_var_state_time <- function(data, var, state, week_nums = 13:63, race_vars = c("white", "black", "hispanic", "other", "asian"), title = waiver(), y_lab = "") {
   filtered_week_nums = str_glue("wk{week_nums}")
-  week_seq = seq(1, length(filtered_week_nums), ceiling(length(filtered_week_nums)/10))
-  week_breaks = data$week_num[week_seq]
-  week_labels = data$date_int[week_seq]
+  week_step <- ceiling(length(filtered_week_nums)/11)
+  week_seq = seq(1, length(filtered_week_nums), week_step)
+  print(week_seq)
+  week_breaks = filtered_week_nums[week_seq]
+  week_labels = data |> 
+    filter(week_num %in% week_breaks) |> 
+    pull(date_int) |> 
+    unique()
+
   data |>
     filter(geography == state, metric == var, week_num %in% filtered_week_nums, race_var %in% race_vars) |>
     ggplot(aes(x=week_num, y=mean, color=race_var, fill=race_var, group=race_var)) +
@@ -78,7 +84,7 @@ std_err_significance |>
 plot_estimates_for_var_state_time(std_err_significance,
                              "food_insufficient",
                              "WA",
-                             week_num = 13:23,
+                             week_num = 13:63,
                              race_vars = c("white", "hispanic"),
                              title = "Mean share of adults in households where there was often or sometimes not enough food\nin the past week by Race, per Week",
                              y_lab="Food Insufficiency Rate")

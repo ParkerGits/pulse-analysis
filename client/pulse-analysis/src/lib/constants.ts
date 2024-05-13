@@ -1,11 +1,8 @@
 export const WEEKLY_METRICS = {
   uninsured: "Health Insurance Coverage",
   insured_public: "Public Health Insurance Coverage",
-  // todo differentiate ?
-  // inc_loss: "",
-  // inc_loss_rv: "",
+  inc_loss_rv: "Income Loss",
   expect_inc_loss: "Expected Income Loss",
-  // payment_not_conf: "",
   rent_not_conf: "Rent Payment Confidence",
   mortgage_not_conf: "Mortgage Payment Confidence",
   rent_caughtup: "Rent Caught Up",
@@ -15,21 +12,12 @@ export const WEEKLY_METRICS = {
   spend_credit: "Credit Card & Loan Spending",
   spend_ui: "Unemployment Insurance Benefit Spending",
   spend_stimulus: "Stimulus Payment Spending",
-  // todo: remove?
-  // anxious_score: "",
-  // worry_score: "",
-  // interest_score: "",
-  // down_score: "",
-  // anxiety_signs: "",
-  // depression_signs: "",
   depression_anxiety_signs: "Depression & Anxiety",
+  mentalhealth_unmet: "Mental Health Needs",
   expense_dif: "Household Expenses",
-  // not asked for week >= 28
-  // telework: "",
+  telework: "Remote Work",
   eviction_risk: "Evicton Risk",
   foreclosure_risk: "Foreclosure Risk",
-  // not asked for week >= 28
-  // learning_fewer: "",
   spend_snap: "SNAP Food Stamp Spending",
 } as const;
 

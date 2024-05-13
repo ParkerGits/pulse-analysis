@@ -1,4 +1,4 @@
-export default function buildPlotUrl(
+export default function buildWeeklyPlotUrl(
   geography: string,
   weeks: number[] | undefined,
   races: string[] | undefined,

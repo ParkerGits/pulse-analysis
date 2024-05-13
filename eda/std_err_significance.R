@@ -138,11 +138,6 @@ plot_state_map <- function(race, week, variable) {
           axis.title=element_blank())
   }
 
-  mynamestheme <- theme(
-    plot.title = element_text(family = "Helvetica", face = "bold", size = (12)),
-    legend.text = element_text(face = "italic", family = "Helvetica"),
-  )
-
   mini <- round(min(data$se, na.rm = TRUE),digits = 4)
   middle <- round(mean(data$mean, na.rm = TRUE),digits = 4)
   firstq <- round(mean(data$mean, na.rm = TRUE) +   sd(data$mean, na.rm = TRUE),digits = 4)
@@ -155,7 +150,6 @@ plot_state_map <- function(race, week, variable) {
     geom_sf(aes(fill = mean, geometry = geometry),color = 'black') +
     scale_fill_continuous(element_blank(), low = "white",high = "darkgreen", breaks = c(mini,firstq,middle,thirdq,maxi), limits = c(mini,maxi), labels = scales::percent)+
     my_map_theme() +
-    mynamestheme +
     labs(title = paste('Percentage of people who', national_title_list[[variable]]))
 
   graph

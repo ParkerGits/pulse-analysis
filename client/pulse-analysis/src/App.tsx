@@ -1,23 +1,8 @@
-import { useState } from "react";
-import GeographyComboBox from "./components/geography-combo-box";
-import RaceToggleGroup from "./components/race-toggle-group";
-import WeekSlider from "./components/week-slider";
-import buildPlotUrl from "./lib/buildPlotUrl";
-import { Button } from "./components/ui/button";
-import { WEEK_NUM_MAX, WEEK_NUM_MIN } from "./lib/constants";
-import MetricComboBox from "./components/metric-combo-box";
 import { TypographyH2 } from "./components/typography-h2";
+import WeeklyPlotSection from "./components/weekly-plot-section";
+import NationalPlotSection from "./components/national-plot-section";
 
 export default function Component() {
-  const [geography, setGeography] = useState<string>("US");
-  const [metric, setMetric] = useState<string>("food_insufficient");
-  const [weeks, setWeeks] = useState<number[]>([WEEK_NUM_MIN, WEEK_NUM_MAX]);
-  const [races, setRaces] = useState<string[]>();
-
-  const [plotUrl, setPlotUrl] = useState<string>(
-    buildPlotUrl(geography, weeks, races, metric),
-  );
-
   return (
     <div className="bg-white px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-3xl space-y-8">
@@ -83,26 +68,10 @@ export default function Component() {
             auctor.
           </p>
           <TypographyH2>Results</TypographyH2>
-          <div className="flex flex-col items-center space-y-4">
-            <RaceToggleGroup onValueChange={setRaces} />
-            <WeekSlider onValueChange={setWeeks} value={weeks} />
-            <div className="flex flex-row items-center space-x-4">
-              <MetricComboBox metric={metric} onMetricSelect={setMetric} />
-              <GeographyComboBox
-                geography={geography}
-                onGeographySelect={setGeography}
-              />
-              <Button
-                onClick={() =>
-                  setPlotUrl(buildPlotUrl(geography, weeks, races, metric))
-                }
-              >
-                Plot
-              </Button>
-            </div>
-            <img src={plotUrl} />
+          <div className="flex flex-col space-y-4">
+            <WeeklyPlotSection />
+            <NationalPlotSection />
           </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2"></div>
           <TypographyH2>Discussion</TypographyH2>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed

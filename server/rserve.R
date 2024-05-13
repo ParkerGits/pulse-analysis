@@ -393,7 +393,7 @@ national_handler <- list(
     response_filepath <- here("server", "tmp", "national", response_filename)
     if (!file.exists(response_filepath)) {
       plot_state_map(race_var, week_num, metric_var)
-      ggsave(response_filepath, create.dir = TRUE)
+      ggsave(response_filepath, create.dir = TRUE, width = 1800, height = 1200, units = "px")
     }
     response_png <- read_file_raw(response_filepath)
 

@@ -15,7 +15,8 @@ export default function buildWeeklyPlotUrl(
   if (races !== undefined && races.length !== 0)
     url.searchParams.append("race", races.join(","));
   if (geography !== "") url.searchParams.append("geography", geography);
-  if (metric !== undefined) url.searchParams.append("metric", metric);
+  if (metric !== undefined && metric !== "")
+    url.searchParams.append("metric", metric);
 
   return url.toString();
 }

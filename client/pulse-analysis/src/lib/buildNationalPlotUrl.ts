@@ -8,8 +8,9 @@ export default function buildNationalPlotUrl(
   );
 
   if (week !== undefined) url.searchParams.append("week", week.toString());
-  if (race !== undefined) url.searchParams.append("race", race);
-  if (metric !== undefined) url.searchParams.append("metric", metric);
+  if (race !== undefined && race !== "") url.searchParams.append("race", race);
+  if (metric !== undefined && metric !== "")
+    url.searchParams.append("metric", metric);
 
   return url.toString();
 }

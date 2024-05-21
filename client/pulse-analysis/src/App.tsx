@@ -1,6 +1,7 @@
 import { TypographyH2 } from "./components/typography-h2";
 import WeeklyPlotSection from "./components/weekly-plot-section";
 import NationalPlotSection from "./components/national-plot-section";
+import { TypographyAnchor } from "./components/typography-anchor";
 
 export default function Component() {
   return (
@@ -8,7 +9,7 @@ export default function Component() {
       <div className="mx-auto max-w-3xl space-y-8">
         <div className="space-y-4">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Demographic Trends in the United States: An Analysis of Census Data
+            Tracking Economic Disparity Throughout the COVID-19 Pandemic
           </h1>
           <div className="flex items-center space-x-4 text-gray-500">
             <div>Parker Landon, Jack Goode</div>
@@ -20,36 +21,33 @@ export default function Component() {
         </div>
         <div className="prose prose-gray max-w-none">
           <TypographyH2>Abstract</TypographyH2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida
-            nibh pretium, iaculis lorem quis, vestibulum leo. Quisque vel turpis
-            mollis, lacinia elit eget, lobortis lacus. Suspendisse pretium nisl
-            risus, quis ultricies lorem suscipit et. Donec ornare nibh libero,
-            sit amet commodo turpis fringilla id. Fusce in leo sit amet elit
-            ullamcorper volutpat vitae sit amet leo. Integer ullamcorper maximus
-            eros ut consectetur. Integer lobortis lectus ac tincidunt ultrices.
-            Nunc tristique lacinia est eget dapibus. Aliquam commodo turpis
-            vestibulum ex lobortis, in hendrerit sem facilisis. Vestibulum ante
-            ipsum primis in faucibus orci luctus et ultrices posuere cubilia
-            curae; Vestibulum ante ipsum primis in faucibus orci luctus et
-            ultrices posuere cubilia curae; Vivamus cursus blandit enim quis
-            auctor.
-          </p>
+          <p></p>
           <TypographyH2>Introduction</TypographyH2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida
-            nibh pretium, iaculis lorem quis, vestibulum leo. Quisque vel turpis
-            mollis, lacinia elit eget, lobortis lacus. Suspendisse pretium nisl
-            risus, quis ultricies lorem suscipit et. Donec ornare nibh libero,
-            sit amet commodo turpis fringilla id. Fusce in leo sit amet elit
-            ullamcorper volutpat vitae sit amet leo. Integer ullamcorper maximus
-            eros ut consectetur. Integer lobortis lectus ac tincidunt ultrices.
-            Nunc tristique lacinia est eget dapibus. Aliquam commodo turpis
-            vestibulum ex lobortis, in hendrerit sem facilisis. Vestibulum ante
-            ipsum primis in faucibus orci luctus et ultrices posuere cubilia
-            curae; Vestibulum ante ipsum primis in faucibus orci luctus et
-            ultrices posuere cubilia curae; Vivamus cursus blandit enim quis
-            auctor.
+            The{" "}
+            <TypographyAnchor href="https://www.urban.org/">
+              UrbanInstitute
+            </TypographyAnchor>{" "}
+            has demonstrated the impact of COVID-19 on economic disparities
+            between racial and ethnic groups by considering data from{" "}
+            <TypographyAnchor href="https://www.urban.org/data-tools/tracking-covid-19s-effects-race-and-ethnicity-questionnaire-one">
+              Phase 1 (April 23, 2020 - July 21, 2020)
+            </TypographyAnchor>{" "}
+            and{" "}
+            <TypographyAnchor href="https://www.urban.org/data-tools/tracking-covid-19s-effects-race-and-ethnicity-questionnaire-two">
+              Phases 2 through 3.5 (August 19, 2020 - July 11, 2022)
+            </TypographyAnchor>{" "}
+            of the Household Pulse Survey. Still, two years later, these
+            disparities are persisting and deepening, with non-white groups
+            shouldering much of the burden. This work extends the UrbanInstitute
+            analyses with an interactive tool summarizing data through Phase 4.1
+            (April 29, 2024) of the{" "}
+            <TypographyAnchor href="https://www.census.gov/data/experimental-data-products/household-pulse-survey.html">
+              Household Pulse Survey
+            </TypographyAnchor>
+            , illustrating our nation's uneven recovery from the pandemic and
+            how its effects continue to disproportionately impact particular
+            racial, ethnic, and geographic communities today.
           </p>
           <TypographyH2>Methods</TypographyH2>
           <p>

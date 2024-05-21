@@ -89,7 +89,7 @@ weekly_metric_ylab_list <- list(
 
 all_races <- c("white", "black", "hispanic", "other", "asian", "total")
 all_weeks_min <- 13
-all_weeks_max <- 63
+all_weeks_max <- 67
 all_weeks <- all_weeks_min:all_weeks_max
 all_geographies <- c(
   "US",
@@ -104,7 +104,7 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
   filtered_week_nums = str_glue("wk{week_nums}")
 
   # format breaks/labels so that x-axis contains, at most, 11 evenly spaced x-axis labels
-  week_step <- ceiling(length(filtered_week_nums)/11)
+  week_step <- ceiling(length(filtered_week_nums)/10)
   week_seq <- seq(1, length(filtered_week_nums), week_step)
   week_breaks <- filtered_week_nums[week_seq]
   week_labels <- pulse |>
@@ -129,6 +129,8 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
     )
   }
 
+  palette <- scales::brewer_pal(type = "qual", palette = "Dark2")(length(all_races))
+
   pulse |>
     filter(geography == geo_var, metric == var, week_num %in% filtered_week_nums, race_var %in% race_vars) |>
     ggplot(aes(x = week_num, y = mean, color = race_var, fill = race_var, group = race_var)) +
@@ -136,8 +138,8 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
     geom_point() +
     geom_ribbon(aes(ymin = moe_95_lb, ymax = moe_95_ub), alpha = 0.5) +
     scale_x_discrete(breaks = week_breaks, labels = week_labels) +
-    scale_fill_discrete(name = "Race") +
-    scale_color_discrete(name = "Race") +
+    scale_fill_manual(name = "Race", breaks = all_races, values = palette) +
+    scale_color_manual(name = "Race", breaks = all_races, values = palette) +
     weekly_plot_theme() +
     labs(
          x = "Week",
@@ -158,9 +160,18 @@ us_states <- usa_sf()
 
 plot_state_map <- function(race, week, variable) {
   week_str <- str_glue("wk{week}")
-  data <- pulse |>
-    filter(metric == variable, week_num == week_str, race_var == race) |>
-    left_join(us_states, c("geography" = "iso_3166_2"))
+  data_metric <- pulse |>
+    filter(metric == variable)
+
+  summary_breaks <- data_metric |>
+    pull(mean) |>
+    summary() |>
+    unname() |>
+    as.numeric()
+
+  data <- data_metric |>
+    filter(week_num == week_str, race_var == race) |>
+    left_join(us_states, c('geography'='iso_3166_2'))
 
   national_map_theme <- function() {
     theme(
@@ -174,16 +185,10 @@ plot_state_map <- function(race, week, variable) {
     )
   }
 
-  mini <- round(min(data$se, na.rm = TRUE), digits = 4)
-  middle <- round(mean(data$mean, na.rm = TRUE), digits = 4)
-  firstq <- round(mean(data$mean, na.rm = TRUE) + sd(data$mean, na.rm = TRUE), digits = 4)
-  thirdq <- round(mean(data$mean, na.rm = TRUE) - sd(data$mean, na.rm = TRUE), digits = 4)
-  maxi <- round(max(data$mean, na.rm = TRUE),digits = 4)
-
   graph <- data |>
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
-    scale_fill_continuous(element_blank(), low = "white", high = "darkgreen", breaks = c(mini, firstq, middle, thirdq, maxi), limits = c(mini,maxi), labels = scales::percent) +
+    scale_fill_gradient2(element_blank(), low = "#D53E4F", mid = "#F7F7F7", high = "#3288BD", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent) +
     national_map_theme() +
     labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
 

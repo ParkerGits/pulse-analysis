@@ -101,11 +101,30 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
   year <- case_when(week_num < 22 ~ 2020,
                     week_num >= 22 & week_num < 41 ~ 2021,
                     week_num >= 41 & week_num < 52 ~ 2022,
-                    week_num >= 52 & week_num <= 63 ~ 2023)
-
-
-  puf_url <- str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/wk{week_num}/HPS_Week{week_num_padded}_PUF_CSV.zip")
-
+                    week_num >= 52 & week_num < 64 ~ 2023,
+                    week_num >= 64 & week_num <= 67 ~ 2024)
+  
+  # in 2024, switches from weeks to cycles
+  cycle_num_padded <- case_when(
+    # week 64 is cycle 01, week 65 is cycle 02, etc.
+    week_num >= 64 ~ str_pad(week_num - 63, width = 2, side = "left", pad = "0"),
+    TRUE ~ ""
+  )
+  
+  # in 2024, files distinguished by phase version (e.g. 4.0, 4.1)
+  phase_version <- case_when(
+    week_num >= 64 & week_num < 67 ~ 0,
+    week_num >= 67 ~ 1,
+    TRUE ~ NA_real_
+  )
+  phase_version_padded <- str_pad(phase_version, width = 2, side = "left", pad = "0")
+  
+  puf_url <- case_when(
+    week_num <= 63 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/wk{week_num}/HPS_Week{week_num_padded}_PUF_CSV.zip"),
+    week_num >= 64 & week_num < 67 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/cycle{cycle_num_padded}/HPS_Phase4Cycle{cycle_num_padded}_PUF_CSV.zip"),
+    week_num >= 67 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/cycle{cycle_num_padded}/HPS_Phase4-{phase_version}Cycle{cycle_num_padded}_PUF_CSV.zip")
+  )
+  
   # Create public_use_files directory if it doesn't exist
   dir.create("data/raw-data/public_use_files/", showWarnings = F)
 
@@ -136,7 +155,10 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
   ### Read in PUF file
   # week_num 52 wrongly formatted, is 2022 but says 2023
   year_path <- ifelse(week_num == 52, 2022, year)
-  puf_filepath <- str_glue("{output_filepath}pulse{year_path}_puf_{week_num_padded}.csv")
+  puf_filepath <- case_when(
+    year <= 2023 ~ str_glue("{output_filepath}pulse{year_path}_puf_{week_num_padded}.csv"),
+    year == 2024 ~ str_glue("{output_filepath}hps_04_{phase_version_padded}_{cycle_num_padded}_puf.csv")
+  )
   df <- read_csv(puf_filepath)
 
   #Phase 2 (Week 13-17) and phase 3 (Week 18-27)
@@ -368,6 +390,53 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              mh_notget = NA_real_,
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
+  }
+  
+  #Phase 4.0: Week 64-66
+  if (week_num > 63 & week_num <= 66) {
+    df <- df %>%
+      rename(WRKLOSS = WRKLOSSRV) %>%
+      mutate(expctloss = NA_real_,
+             tw_start = NA_real_,
+             tch_hrs = NA_real_,
+             mortconf = NA_real_,
+             mh_notget = NA_real_,
+             SPNDSRC1 = NA_real_,
+             SPNDSRC2 = NA_real_,
+             SPNDSRC3 = NA_real_,
+             SPNDSRC4 = NA_real_,
+             SPNDSRC5 = NA_real_,
+             SPNDSRC6 = NA_real_,
+             SPNDSRC7 = NA_real_,
+             SPNDSRC8 = NA_real_,
+             SPNDSRC9 = NA_real_,
+             SPNDSRC10 = NA_real_,
+             SPNDSRC11 = NA_real_,
+             SPNDSRC12 = NA_real_)
+  }
+  
+  #Phase 4.1: Week 67
+  if (week_num == 67) {
+    df <- df %>%
+      rename(WRKLOSS = WRKLOSSRV,
+             FORCLOSE = FORECLOSE) %>%
+      mutate(expctloss = NA_real_,
+             tw_start = NA_real_,
+             tch_hrs = NA_real_,
+             mortconf = NA_real_,
+             mh_notget = NA_real_,
+             SPNDSRC1 = NA_real_,
+             SPNDSRC2 = NA_real_,
+             SPNDSRC3 = NA_real_,
+             SPNDSRC4 = NA_real_,
+             SPNDSRC5 = NA_real_,
+             SPNDSRC6 = NA_real_,
+             SPNDSRC7 = NA_real_,
+             SPNDSRC8 = NA_real_,
+             SPNDSRC9 = NA_real_,
+             SPNDSRC10 = NA_real_,
+             SPNDSRC11 = NA_real_,
+             SPNDSRC12 = NA_real_)
   }
 
   df_clean <- df %>%
@@ -655,11 +724,11 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
 }
 
 
-week_vec <- 13:63
+week_vec <- 13:67
 puf_all_weeks <- map_df(week_vec, download_and_clean_puf_data)
 
 # single week
-# puf_all_weeks <- map_df(33:34, download_and_clean_puf_data)
+#puf_all_weeks <- map_df(33:34, download_and_clean_puf_data)
 
 # Create public_use_files directory if it doesn't exist
 dir.create("data/intermediate-data", showWarnings = F)
@@ -805,7 +874,7 @@ puf_fmt <- puf_all_weeks |>
     )
   )
 
-write_csv(puf_all_weeks, here("data/intermediate-data", "puf_formatted.csv"))
+write_csv(puf_fmt, here("data/intermediate-data", "puf_formatted.csv"))
 
 # get pct missing for each week by each variable
 all_missing <- puf_all_weeks %>%
@@ -836,7 +905,6 @@ phase_diff(wk45, wk46)
 
 #phase 3.5 to 3.6
 phase_diff(wk48, wk49)
-
 #phase 3.6 to 3.7
 phase_diff(wk51, wk52)
 
@@ -848,4 +916,5 @@ phase_diff(wk57, wk58)
 
 #phase 3.9 to 3.10
 phase_diff(wk60, wk61)
+
 

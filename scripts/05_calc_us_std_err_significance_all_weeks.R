@@ -130,7 +130,32 @@ year_from_week <- function (week_num) {
   case_when(week_num < 22 ~ 2020,
             week_num >= 22 & week_num < 41 ~ 2021,
             week_num >= 41 & week_num < 52 ~ 2022,
-            week_num >= 52 & week_num <= 63 ~ 2023)
+            week_num >= 52 & week_num < 64 ~ 2023,
+            week_num >= 64 ~ 2024)
+}
+
+get_repwgt_filepath <- function (week_num) {
+  year <- year_from_week(week_num)
+  # week_num 52 repwgt file has wrong year, should be 2023
+  year <- ifelse(week_num == 52, 2022, year)
+  # in 2024, switches from weeks to cycles
+  cycle_num_padded <- case_when(
+    # week 64 is cycle 01, week 65 is cycle 02, etc.
+    week_num >= 64 ~ str_pad(week_num - 63, width = 2, side = "left", pad = "0"),
+    TRUE ~ ""
+  )
+  # in 2024, files distinguished by phase version (e.g. 4.0, 4.1)
+  phase_version <- case_when(
+    week_num >= 64 & week_num < 67 ~ 0,
+    week_num >= 67 ~ 1,
+    TRUE ~ NA_real_
+  )
+  phase_version_padded <- str_pad(phase_version, width = 2, side = "left", pad = "0")
+  repwgt_filepath <- case_when(
+    week_num < 64 ~ str_glue("data/raw-data/public_use_files/pulse{year}_repwgt_puf_{week_num}.csv"),
+    week_num >= 64 ~ str_glue("data/raw-data/public_use_files/hps_04_{phase_version_padded}_{cycle_num_padded}_repwgt_puf.csv")
+  )
+  return(repwgt_filepath)
 }
 
 generate_us_se_for_weeks <- function(df, week_nums) {
@@ -154,18 +179,19 @@ generate_us_se_for_weeks <- function(df, week_nums) {
     
     
     # get replicate weights for current week
-    week_str <- str_glue("wk{week_num}")
     year <- year_from_week(week_num)
     # week_num 52 repwgt file has wrong year, should be 2023
-    year <- ifelse(week_num == 52, 2022, year)
-    rep_wt_filepath <- str_glue("data/raw-data/public_use_files/pulse{year}_repwgt_puf_{week_num}.csv")
-    rep_wt <- read_csv(rep_wt_filepath) %>%
+    # get replicate weights for current week
+    repwgt_filepath <- get_repwgt_filepath(week_num)
+    repwgt <- read_csv(repwgt_filepath) %>%
       janitor::clean_names()
+    
+    week_str <- str_glue("wk{week_num}")
     
     # filter puf data to current week and join weights
     puf_cur_week <- df |>
       filter(week_num == week_str) |>
-      left_join(rep_wt, by = "scram")
+      left_join(repwgt, by = "scram")
     
     #Set BRR survey design and specify replicate weights
     svy_all <- puf_cur_week %>%
@@ -197,6 +223,6 @@ generate_us_se_for_weeks <- function(df, week_nums) {
 }
 
 puf_all_weeks <- read_csv("data/intermediate-data/puf_formatted.csv")
-us_ses <- generate_us_se_for_weeks(puf_all_weeks, 13:63)
+us_ses <- generate_us_se_for_weeks(puf_all_weeks, 13:67)
 
 write_csv(us_ses, "data/intermediate-data/phase2_all_us_ses.csv")

@@ -98,6 +98,10 @@ week_crosswalk <- tibble::tribble(
   "wk61", paste("8/23/23\u2013", "9/4/23", sep = ""),
   "wk62", paste("9/20/23\u2013", "10/2/23", sep = ""),
   "wk63", paste("10/18/23\u2013", "10/30/23", sep = ""),
+  "wk64", paste("01/09/24\u2013", "02/05/24", sep = ""),
+  "wk65", paste("02/06/24\u2013", "03/04/24", sep = ""),
+  "wk66", paste("03/05/24\u2013", "04/01/24", sep = ""),
+  "wk67", paste("04/02/24\u2013", "04/29/24", sep = "")
 )
 
 # create data for feature with combined inc_loss and inc_loss_rv metric

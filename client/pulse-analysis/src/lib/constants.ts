@@ -85,4 +85,4 @@ export const WEEKLY_GEOGRAPHIES = {
 };
 
 export const WEEK_NUM_MIN = 13;
-export const WEEK_NUM_MAX = 63;
+export const WEEK_NUM_MAX = 67;

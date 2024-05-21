@@ -12,6 +12,40 @@ library(furrr)
 library(data.table)
 library(assertthat)
 
+metrics <- c(
+  "uninsured",
+  "insured_public",
+  "inc_loss",
+  "expect_inc_loss",
+  "rent_not_conf",
+  "mortgage_not_conf",
+  "food_insufficient",
+  "depression_anxiety_signs",
+  "spend_credit",
+  "spend_ui",
+  "spend_stimulus",
+  "spend_savings",
+  "spend_snap",
+  "rent_caughtup",
+  "mortgage_caughtup",
+  "eviction_risk",
+  "foreclosure_risk",
+  "telework",
+  "mentalhealth_unmet",
+  "learning_fewer",
+  "expense_dif"
+)
+
+other_cols <- c(
+  "cbsa_title",
+  "state",
+  "hisp_rrace",
+  "week_num"
+)
+
+race_indicators <- c("black", "asian", "hispanic", "white", "other")
+
+all_cols <- c(metrics, other_cols)
 
 get_se_diff <- function(..., svy) {
   # Function to calculate all means/SEs and mean/SEs of the difference between
@@ -158,66 +192,33 @@ year_from_week <- function (week_num) {
   case_when(week_num < 22 ~ 2020,
             week_num >= 22 & week_num < 41 ~ 2021,
             week_num >= 41 & week_num < 52 ~ 2022,
-            week_num >= 52 & week_num <= 63 ~ 2023)
+            week_num >= 52 & week_num < 64 ~ 2023,
+            week_num >= 64 ~ 2024)
 }
 
-read_format_puf <- function() {
-  ##  Read in and clean data
-  puf_all_weeks <- read_csv(here("data/intermediate-data", "pulse_puf2_all_weeks.csv")) |>
-    mutate(spend_credit = as.numeric(spend_credit),
-           spend_savings = as.numeric(spend_savings),
-           spend_stimulus = as.numeric(spend_stimulus),
-           spend_ui = as.numeric(spend_ui),
-           inc_loss = as.numeric(inc_loss),
-           inc_loss_rv = as.numeric(inc_loss_rv),
-    #create combined inc_loss variable for efficient processing
-    inc_loss = case_when(week_x >= 28 ~ inc_loss_rv,
-                         TRUE ~ inc_loss),
-    tbirth_year = as.numeric(tbirth_year),
-    # For the uninsured variable, we filter out people over 65 from the denominator
-    insured_public = case_when(
-        tbirth_year < 1956 ~ NA_real_,
-        TRUE ~ as.numeric(insured_public)
-      ),
-    uninsured = case_when(
-        tbirth_year < 1956 ~ NA_real_,
-        TRUE ~ as.numeric(uninsured)
-      ),
-    insured_public = case_when(
-        tbirth_year < 1956 ~ NA_real_,
-        TRUE ~ as.numeric(insured_public)
-      ),
-    uninsured = case_when(
-        tbirth_year < 1956 ~ NA_real_,
-        TRUE ~ as.numeric(uninsured)
-      )) |>
-    select(all_cols, scram, pweight) |>
-    janitor::clean_names() |>
-    # Add race indicator variables for easy use with survey package
-    mutate(
-      black = case_when(
-        str_detect(hisp_rrace, "Black alone") ~ 1,
-        TRUE ~ 0
-      ),
-      white = case_when(
-        str_detect(hisp_rrace, "White") ~ 1,
-        TRUE ~ 0
-      ),
-      hispanic = case_when(
-        str_detect(hisp_rrace, "Latino") ~ 1,
-        TRUE ~ 0
-      ),
-      asian = case_when(
-        str_detect(hisp_rrace, "Asian") ~ 1,
-        TRUE ~ 0
-      ),
-      other = case_when(
-        str_detect(hisp_rrace, "Two or") ~ 1,
-        TRUE ~ 0
-      )
-    )
+get_repwgt_filepath <- function (week_num) {
+  year <- year_from_week(week_num)
+  # week_num 52 repwgt file has wrong year, should be 2023
+  year <- ifelse(week_num == 52, 2022, year)
+  # in 2024, switches from weeks to cycles
+  cycle_num_padded <- case_when(
+    # week 64 is cycle 01, week 65 is cycle 02, etc.
+    week_num >= 64 ~ str_pad(week_num - 63, width = 2, side = "left", pad = "0"),
+    TRUE ~ ""
+  )
+  # in 2024, files distinguished by phase version (e.g. 4.0, 4.1)
+  phase_version <- case_when(
+    week_num >= 64 & week_num < 67 ~ 0,
+    week_num >= 67 ~ 1,
+    TRUE ~ NA_real_
+  )
+  phase_version_padded <- str_pad(phase_version, width = 2, side = "left", pad = "0")
+  repwgt_filepath <- case_when(
+    week_num < 64 ~ str_glue("data/raw-data/public_use_files/pulse{year}_repwgt_puf_{week_num}.csv"),
+    week_num >= 64 ~ str_glue("data/raw-data/public_use_files/hps_04_{phase_version_padded}_{cycle_num_padded}_repwgt_puf.csv")
+  )
+  return(repwgt_filepath)
 }
-
 
 generate_se_for_weeks <- function(df, week_nums) {
   all_diff_ses <- list()
@@ -240,18 +241,16 @@ generate_se_for_weeks <- function(df, week_nums) {
     
     
     # get replicate weights for current week
-    week_str <- str_glue("wk{week_num}")
-    year <- year_from_week(week_num)
-    # week_num 52 repwgt file has wrong year, should be 2023
-    year <- ifelse(week_num == 52, 2022, year)
-    rep_wt_filepath <- str_glue("data/raw-data/public_use_files/pulse{year}_repwgt_puf_{week_num}.csv")
-    rep_wt <- read_csv(rep_wt_filepath) %>%
+    repwgt_filepath <- get_repwgt_filepath(week_num)
+    repwgt <- read_csv(repwgt_filepath) %>%
       janitor::clean_names()
+    
+    week_str <- str_glue("wk{week_num}")
     
     # filter puf data to current week and join weights
     puf_cur_week <- df |>
       filter(week_num == week_str) |>
-      left_join(rep_wt, by = "scram")
+      left_join(repwgt, by = "scram")
     
     # generate all_list
     state_list <- puf_cur_week %>%
@@ -289,7 +288,6 @@ generate_se_for_weeks <- function(df, week_nums) {
 }
 
 puf_all_weeks <- read_csv("data/intermediate-data/puf_formatted.csv")
-ses <- generate_se_for_weeks(puf_all_weeks, 13:63)
-
+ses <- generate_se_for_weeks(puf_all_weeks, 67)
 write_csv(ses, "data/intermediate-data/phase2_all_ses.csv")
 

@@ -1,7 +1,7 @@
 library(tidyverse)
 library(here)
 
-std_err_significance <- read_csv("data/final-data/phase2_all_ses_moe.csv")
+std_err_significance <- read_csv("data/final-data/phase2_all.csv")
 
 
 plot_estimates_for_var_state <- function(data, var, state, week_nums = 13:63, race_vars = c("white", "black", "hispanic", "other", "asian"), title = waiver(), y_lab = "") {
@@ -49,10 +49,10 @@ plot_estimates_for_var_state(std_err_significance,
                              title = "Mean share of adults that experienced difficulty paying household expenses in past 7 days\nby Race, per Week",
                              y_lab="Expense Difficulty Rate")
 
-
-plot_estimates_for_var_state_time <- function(data, var, state, week_nums = 13:63, race_vars = c("white", "black", "hispanic", "other", "asian"), title = waiver(), y_lab = "") {
+all_races <- c("white", "black", "hispanic", "other", "asian")
+plot_estimates_for_var_state_time <- function(data, var, state, week_nums = 13:63, race_vars = all_races, title = waiver(), y_lab = "") {
   filtered_week_nums = str_glue("wk{week_nums}")
-  week_step <- ceiling(length(filtered_week_nums)/11)
+  week_step <- ceiling(length(filtered_week_nums)/10)
   week_seq = seq(1, length(filtered_week_nums), week_step)
   print(week_seq)
   week_breaks = filtered_week_nums[week_seq]
@@ -68,8 +68,8 @@ plot_estimates_for_var_state_time <- function(data, var, state, week_nums = 13:6
     geom_point() +
     geom_ribbon(aes(ymin=moe_95_lb, ymax=moe_95_ub), alpha = 0.5) +
     scale_x_discrete(breaks=week_breaks, labels=week_labels) +
-    scale_fill_discrete(name = "Race") +
-    scale_color_discrete(name="Race") +
+    scale_fill_manual(name = "Race", breaks = all_races, values = scales::brewer_pal(type = "qual", palette = "Dark2")(6)) +
+    scale_color_manual(name="Race", breaks = all_races, values = scales::brewer_pal(type = "qual", palette = "Dark2")(6)) +
     labs(x = "Week",
          y = y_lab,
          title = title)
@@ -84,8 +84,7 @@ std_err_significance |>
 plot_estimates_for_var_state_time(std_err_significance,
                              "food_insufficient",
                              "WA",
-                             week_num = 13:63,
-                             race_vars = c("white", "hispanic"),
+                             week_num = 13:67,
                              title = "Mean share of adults in households where there was often or sometimes not enough food\nin the past week by Race, per Week",
                              y_lab="Food Insufficiency Rate")
 
@@ -131,10 +130,26 @@ national_title_list <- list(
   uninsured = "are uninsured"
 )
 
+std_err_significance |>
+  filter(metric == "food_insufficient") |>
+  pull(mean) |>
+  summary()
+
+us_states <- usa_sf()
+
 plot_state_map <- function(race, week, variable) {
   week_str <- str_glue("wk{week}")
-  data <- std_err_significance |>
-    filter(metric == variable, week_num == week_str, race_var == race) |>
+  data_metric <- std_err_significance |>
+    filter(metric == variable) 
+  
+  summary_breaks <- data_metric |>
+    pull(mean) |>
+    summary() |>
+    unname() |>
+    as.numeric()
+  
+  data <- data_metric |>
+    filter(week_num == week_str, race_var == race) |>
     left_join(us_states, c('geography'='iso_3166_2'))
 
   my_map_theme <- function(){
@@ -144,21 +159,18 @@ plot_state_map <- function(race, week, variable) {
           axis.title=element_blank())
   }
 
-  mini <- round(min(data$se, na.rm = TRUE),digits = 4)
-  middle <- round(mean(data$mean, na.rm = TRUE),digits = 4)
-  firstq <- round(mean(data$mean, na.rm = TRUE) +   sd(data$mean, na.rm = TRUE),digits = 4)
-  thirdq <- round(mean(data$mean, na.rm = TRUE) - sd(data$mean, na.rm = TRUE),digits = 4)
-  maxi <- round(max(data$mean, na.rm = TRUE),digits = 4)
-
   graph <- data %>%
     mutate(average = round(mean, digits = 4)*100) %>%
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry),color = 'black') +
-    scale_fill_continuous(element_blank(), low = "white",high = "darkgreen", breaks = c(mini,firstq,middle,thirdq,maxi), limits = c(mini,maxi), labels = scales::percent)+
+    scale_fill_gradient2(element_blank(), low = "#D53E4F", mid = "#F7F7F7", high = "#3288BD", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent)+
     my_map_theme() +
     labs(title = paste('Percentage of people who', national_title_list[[variable]]))
 
   graph
 }
 
-plot_state_map("white", 13, "food_insufficient")
+plot_state_map("white", 45, "food_insufficient")
+std_err_significance |>
+  filter(metric == "food_insufficient", week_num == "wk13", geography == "US") |>
+  pull(mean)

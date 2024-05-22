@@ -49,7 +49,7 @@ metric_title_list <- list(
   food_insufficient = "Percentage of adults in households where there was\noften or sometimes not enough food in the past week",
   foreclosure_risk = "Percentage of adults in households at high risk\nof being foreclosed in the next two months",
   inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks (phases 3.1-3.10)",
-  insured_public = "Percentage of adults under 65 that have public health insurance",
+  insured_public = "Percentage of adults under 65 that have public health insurance\n(Medicare, Medicaid, or VA Health Insurance)",
   mentalhealth_unmet = "Percentage of adults that needed but did not get\ncounseling or therapy from a mental health professional in the past 4 weeks,\nfor any reason (question removed in phase 3.5)",
   mortgage_caughtup = "Percentage of adults in households that are\ncurrently caught up on mortgage payments",
   mortgage_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their mortgage next month\nor have deferred payment (question removed in phase 3.5)",

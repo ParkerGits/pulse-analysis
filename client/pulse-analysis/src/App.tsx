@@ -37,11 +37,11 @@ export default function Component() {
             the United States continue to feel its lasting effects. Drawing from
             Household Pulse Survey data produced by the U.S. Census Bureau, we
             consider how households in various communities throughout the United
-            States have recovered since March 2020. We introduce an interactive
-            data visualization tool that illustrates changes in
-            condition-indicating metrics like food insufficiency, spending,
-            insurance, and income across various times, geographies, and
-            ethnicities. Using this tool, we demonstrate the nation's uneven
+            States are still impacted by or recovering from the pandemic. We
+            introduce an interactive data visualization tool that illustrates
+            changes in condition-indicating metrics like food insufficiency,
+            spending, insurance, and income across various times, geographies,
+            and ethnicities. Using this tool, we demonstrate the nation's uneven
             recovery, showing that social and economic disparities between
             racial, ethnic, and geographic communities remain steady. Across
             nearly all metrics, white communities consistently fare better than
@@ -50,7 +50,7 @@ export default function Component() {
             improvements for the entire nation, others indicate how conditions
             have worsened for everybody. In response, we recommend that these
             results inform policies and decisions that focus on improving
-            particular, worsening conditions for specific communities that have
+            particular worsening conditions for specific communities that have
             undergone disproportionate impact and struggle to recover.
           </p>
           <TypographyH2>Introduction</TypographyH2>

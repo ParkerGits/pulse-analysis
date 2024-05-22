@@ -37,7 +37,7 @@ export default function Component() {
             the United States continue to feel its lasting effects. Drawing from
             Household Pulse Survey data produced by the U.S. Census Bureau, we
             consider how households in various communities throughout the United
-            States are still impacted by or recovering from the pandemic. We
+            States are still impacted by and recovering from the pandemic. We
             introduce an interactive data visualization tool that illustrates
             changes in condition-indicating metrics like food insufficiency,
             spending, insurance, and income across various times, geographies,

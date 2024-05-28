@@ -42,7 +42,7 @@ metrics <- c(
 )
 
 metric_title_list <- list(
-  depression_anxiety_signs = "Percentage of adults that have shown\ndepression or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-3.10)",
+  depression_anxiety_signs = "Percentage of adults that have shown depression\n or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-3.10)",
   eviction_risk = "Percentage of adults in households at high risk\nof being evicted in the next two months",
   expect_inc_loss = "Percentage of adults in households where at least one person\nexpects to lose employment income in the next four weeks\n(question removed in phase 3.2)",
   expense_dif = "Percentage of adults in households have had difficulty\npaying for usual household expenses",
@@ -65,26 +65,26 @@ metric_title_list <- list(
 )
 
 weekly_metric_ylab_list <- list(
-  "food_insufficient" = "Food Insufficiency Rate",
-  "depression_anxiety_signs" = "Depression/Anxiety Rate",
-  "expense_dif" = "Expense Difficulty Rate",
-  "uninsured" = "Uninsured Rate",
-  "insured_public" = "Public Health Insurance Rate",
-  "inc_loss_rv" = "Percent Experienced Income Loss",
+  "food_insufficient" = "Percent Experiencing Food Insufficiency",
+  "depression_anxiety_signs" = "Percent Experiencing Depression/Anxiety Signs",
+  "expense_dif" = "Percent Experiencing Expense Difficulty",
+  "uninsured" = "Percent Uninsured",
+  "insured_public" = "Percent Having Public Health Insurance",
+  "inc_loss_rv" = "Percent Experiencing Income Loss",
   "expect_inc_loss" = "Percent Expecting Income Loss",
-  "rent_not_conf" = "Rent Payment Uncertainty Rate",
-  "mortgage_not_conf" = "Mortgage Payment Uncertainty Rate",
-  "rent_caughtup" = "Rent Payment Caught Up Rate",
-  "mortgage_caughtup" = "Mortgage Payment Caught Up Rate",
-  "spend_savings" = "Percent Spending Savings",
-  "spend_credit" = "Percent Spending Credit",
-  "spend_ui" = "Percent Spending UI",
-  "spend_stimulus" = "Percent Spending Stimulus",
-  "telework" = "Remote Work Rate",
-  "eviction_risk" = "Eviction Risk Rate",
-  "foreclosure_risk" = "Foreclosure Risk Rate",
-  "spend_snap" = "Percent Spending SNAP",
-  "mentalhealth_unmet" = "Mental Health Needs Unmet Rate"
+  "rent_not_conf" = "Percent Feeling Uncertain about Rent Payments",
+  "mortgage_not_conf" = "Percent Feeling Uncertain about Mortgage Payments",
+  "rent_caughtup" = "Percent Feeling Caught Up on Rent Payments",
+  "mortgage_caughtup" = "Percent Feeling Caught Up on Mortgage Payments",
+  "spend_savings" = "Percent Using Savings to Meet Spending Needs",
+  "spend_credit" = "Percent Using Credit Cards and Loans to Meet Spending Needs",
+  "spend_ui" = "Percent Using Unemployment Insurance to Meet Spending Needs",
+  "spend_stimulus" = "Percent Using Stimulus Payments to Meet Spending Needs",
+  "telework" = "Percent Working Remotely",
+  "eviction_risk" = "Percent Experiencing Risk of Eviction",
+  "foreclosure_risk" = "Percent Experiencing Risk of Foreclosure",
+  "spend_snap" = "Percent using SNAP to Meet Spending Needs",
+  "mentalhealth_unmet" = "Percent Experiencing Unment Mental Health Needs"
 )
 
 all_races <- c("white", "black", "hispanic", "other", "asian", "total")
@@ -138,6 +138,7 @@ plot_estimates_for_var_state_time <- function(var = metrics[1], geo_var = all_ge
     geom_point() +
     geom_ribbon(aes(ymin = moe_95_lb, ymax = moe_95_ub), alpha = 0.5) +
     scale_x_discrete(breaks = week_breaks, labels = week_labels) +
+    scale_y_continuous(labels = scales::percent) +
     scale_fill_manual(name = "Race", breaks = all_races, values = palette) +
     scale_color_manual(name = "Race", breaks = all_races, values = palette) +
     weekly_plot_theme() +
@@ -188,7 +189,7 @@ plot_state_map <- function(race, week, variable) {
   graph <- data |>
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
-    scale_fill_gradient2(element_blank(), low = "#D53E4F", mid = "#F7F7F7", high = "#3288BD", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent) +
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent) +
     national_map_theme() +
     labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
 

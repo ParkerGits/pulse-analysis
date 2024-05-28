@@ -68,6 +68,7 @@ plot_estimates_for_var_state_time <- function(data, var, state, week_nums = 13:6
     geom_point() +
     geom_ribbon(aes(ymin=moe_95_lb, ymax=moe_95_ub), alpha = 0.5) +
     scale_x_discrete(breaks=week_breaks, labels=week_labels) +
+    scale_y_continuous(labels=scales::percent) +
     scale_fill_manual(name = "Race", breaks = all_races, values = scales::brewer_pal(type = "qual", palette = "Dark2")(6)) +
     scale_color_manual(name="Race", breaks = all_races, values = scales::brewer_pal(type = "qual", palette = "Dark2")(6)) +
     labs(x = "Week",
@@ -156,14 +157,15 @@ plot_state_map <- function(race, week, variable) {
     theme(panel.background=element_blank(),
           axis.text=element_blank(),
           axis.ticks=element_blank(),
-          axis.title=element_blank())
+          axis.title=element_blank(),
+          legend.position="bottom")
   }
 
   graph <- data %>%
     mutate(average = round(mean, digits = 4)*100) %>%
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry),color = 'black') +
-    scale_fill_gradient2(element_blank(), low = "#D53E4F", mid = "#F7F7F7", high = "#3288BD", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent)+
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent)+
     my_map_theme() +
     labs(title = paste('Percentage of people who', national_title_list[[variable]]))
 

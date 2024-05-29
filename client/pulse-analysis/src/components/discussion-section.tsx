@@ -10,16 +10,13 @@ export default function DiscussionSection() {
     <>
       <TypographyH2>Discussion</TypographyH2>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed
-        fringilla nibh. Mauris auctor eros lectus, in tincidunt diam imperdiet
-        vel. Cras sodales fermentum nisi, a mollis purus cursus vitae. Sed id
-        ipsum ut tellus euismod elementum. Etiam pharetra nec mi at molestie. Ut
-        euismod elit odio, sed egestas leo vulputate eu. Curabitur tempor nibh
-        et nibh scelerisque pharetra eu id eros. Maecenas quis arcu pharetra,
-        pharetra tellus quis, fringilla dolor. Curabitur placerat vehicula
-        ligula, vel faucibus sem rhoncus ut. Vivamus nec pretium leo. Maecenas
-        mollis massa nec gravida ullamcorper. Vestibulum commodo euismod lectus
-        sit amet imperdiet.
+        The Weekly Metrics interactive data tool demonstrates stark, sustained
+        disparities between racial and ethnic groups across several critical
+        social and economic well-being indicators. These disparities are most
+        pronounced in the plot of food insufficiency rates over time, where
+        white and Asian communities consistently fall significantly below the
+        aggregate rates of food insufficiency while black, Hispanic, and other
+        groups consistently lie significantly above.
       </p>
       <img src={foodInsufficient} />
       <p>

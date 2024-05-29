@@ -42,13 +42,13 @@ metrics <- c(
 )
 
 metric_title_list <- list(
-  depression_anxiety_signs = "Percentage of adults that have shown depression\n or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-3.10)",
+  depression_anxiety_signs = "Percentage of adults that have shown depression\n or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-4.1)",
   eviction_risk = "Percentage of adults in households at high risk\nof being evicted in the next two months",
   expect_inc_loss = "Percentage of adults in households where at least one person\nexpects to lose employment income in the next four weeks\n(question removed in phase 3.2)",
   expense_dif = "Percentage of adults in households have had difficulty\npaying for usual household expenses",
   food_insufficient = "Percentage of adults in households where there was\noften or sometimes not enough food in the past week",
   foreclosure_risk = "Percentage of adults in households at high risk\nof being foreclosed in the next two months",
-  inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks (phases 3.1-3.10)",
+  inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks (phases 3.1-4.1)",
   insured_public = "Percentage of adults under 65 that have public health insurance\n(Medicare, Medicaid, or VA Health Insurance)",
   mentalhealth_unmet = "Percentage of adults that needed but did not get\ncounseling or therapy from a mental health professional in the past 4 weeks,\nfor any reason (question removed in phase 3.5)",
   mortgage_caughtup = "Percentage of adults in households that are\ncurrently caught up on mortgage payments",
@@ -180,7 +180,7 @@ plot_state_map <- function(race, week, variable) {
       axis.text = element_blank(),
       axis.ticks = element_blank(),
       axis.title = element_blank(),
-      plot.title = element_text(family = "Helvetica", face = "bold", size = 12, hjust = 0.5),
+      plot.title = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
       plot.subtitle = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
       legend.text = element_text(face = "italic", family = "Helvetica"),
     )

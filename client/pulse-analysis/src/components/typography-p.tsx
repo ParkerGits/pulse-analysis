@@ -1,18 +1,13 @@
 import { cn } from "@/lib/utils";
 import { PropsWithChildren } from "react";
 
-export function TypographyH2({
+export function TypographyP({
   children,
   className,
 }: PropsWithChildren<{ className?: string }>) {
   return (
-    <h2
-      className={cn(
-        "scroll-m-20 pb-2 text-3xl font-semibold tracking-tight mt-4",
-        className,
-      )}
-    >
+    <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}>
       {children}
-    </h2>
+    </p>
   );
 }

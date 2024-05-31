@@ -1,8 +1,8 @@
 import DiscussionSection from "./components/discussion-section";
 import AbstractSection from "./components/abstract-section";
 import IntroductionSection from "./components/introduction-section";
-import MethodsSection from "./components/methods-section";
 import ResultsSection from "./components/results-section";
+import MethodsSection from "./components/methods-section";
 
 export default function Component() {
   return (

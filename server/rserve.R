@@ -59,9 +59,9 @@ metric_title_list <- list(
   spend_savings = "Percentage of adults that used savings or sold assets to meet\ntheir spending needs in the past week\n(question removed in phase 4.0)",
   spend_snap = "Percentage of adults that have used SNAP to meet\ntheir spending needs in the past 7 days\n(question removed in phase 4.0)",
   spend_stimulus = "Percentage of adults that used stimulus payments to meet\ntheir spending needs in the past week\n(question removed in phase 4.0)",
-  spend_ui = "Percentage of adults that used unemployment insurance (UI) benefits\nto meet their spending needs in the past week",
+  spend_ui = "Percentage of adults that used unemployment insurance (UI) benefits\nto meet their spending needs in the past week\n(question removed in phase 4.0)",
   telework = "Percentage of adults in households where at least one adult\nwhose work is typically in-person has begun working online\nbecause of the COVID-19 pandemic (question removed in phase 3.1)",
-  uninsured = "Percentage of adults under 65 that are uninsured"
+  uninsured = "Percentage of adults under 65 that have no health insurance\n(or only have insurance through the Indian Health Service)"
 )
 
 weekly_metric_ylab_list <- list(

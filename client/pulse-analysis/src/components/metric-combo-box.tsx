@@ -30,7 +30,7 @@ export default function MetricComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-between"
+          className="w-[400px] justify-between"
         >
           {metric === ""
             ? "Select metric..."
@@ -38,7 +38,7 @@ export default function MetricComboBox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
+      <PopoverContent className="w-[400px] p-0">
         <Command className="rounded-lg border shadow-md">
           <CommandInput placeholder="Search metric..." />
           <CommandList>

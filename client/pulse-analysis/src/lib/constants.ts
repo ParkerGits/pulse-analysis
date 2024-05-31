@@ -18,7 +18,7 @@ export const WEEKLY_METRICS = {
   telework: "Remote Work",
   eviction_risk: "Evicton Risk",
   foreclosure_risk: "Foreclosure Risk",
-  spend_snap: "SNAP Food Stamp Spending",
+  spend_snap: "SNAP Spending",
 } as const;
 
 export const WEEKLY_RACE_VARS = {

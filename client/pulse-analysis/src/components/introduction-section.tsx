@@ -15,8 +15,8 @@ export default function IntroductionSection() {
           action. Survey questions concern household demographics alongside
           economic and social well-being indicators like employment, food
           sufficiency, and housing security. The survey's initial phases began
-          on April 23, 2020, shortly after the descent of the COVID-19 pandemic
-          in the United States, and has served as a vital measure of its effects
+          on April 23, 2020, shortly after the onset of the COVID-19 pandemic in
+          the United States, and has served as a vital measure of its effects
           throughout.
         </TypographyP>
         <TypographyP>

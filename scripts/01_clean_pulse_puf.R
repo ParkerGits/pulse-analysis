@@ -103,14 +103,14 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
                     week_num >= 41 & week_num < 52 ~ 2022,
                     week_num >= 52 & week_num < 64 ~ 2023,
                     week_num >= 64 & week_num <= 67 ~ 2024)
-  
+
   # in 2024, switches from weeks to cycles
   cycle_num_padded <- case_when(
     # week 64 is cycle 01, week 65 is cycle 02, etc.
     week_num >= 64 ~ str_pad(week_num - 63, width = 2, side = "left", pad = "0"),
     TRUE ~ ""
   )
-  
+
   # in 2024, files distinguished by phase version (e.g. 4.0, 4.1)
   phase_version <- case_when(
     week_num >= 64 & week_num < 67 ~ 0,
@@ -118,13 +118,13 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
     TRUE ~ NA_real_
   )
   phase_version_padded <- str_pad(phase_version, width = 2, side = "left", pad = "0")
-  
+
   puf_url <- case_when(
     week_num <= 63 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/wk{week_num}/HPS_Week{week_num_padded}_PUF_CSV.zip"),
     week_num >= 64 & week_num < 67 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/cycle{cycle_num_padded}/HPS_Phase4Cycle{cycle_num_padded}_PUF_CSV.zip"),
     week_num >= 67 ~ str_glue("https://www2.census.gov/programs-surveys/demo/datasets/hhp/{year}/cycle{cycle_num_padded}/HPS_Phase4-{phase_version}Cycle{cycle_num_padded}_PUF_CSV.zip")
   )
-  
+
   # Create public_use_files directory if it doesn't exist
   dir.create("data/raw-data/public_use_files/", showWarnings = F)
 
@@ -391,7 +391,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC6 = NA_real_,
              SPNDSRC7 = NA_real_)
   }
-  
+
   #Phase 4.0: Week 64-66
   if (week_num > 63 & week_num <= 66) {
     df <- df %>%
@@ -414,7 +414,7 @@ download_and_clean_puf_data <- function(week_num, vars = ui_vars, output_filepat
              SPNDSRC11 = NA_real_,
              SPNDSRC12 = NA_real_)
   }
-  
+
   #Phase 4.1: Week 67
   if (week_num == 67) {
     df <- df %>%
@@ -916,5 +916,4 @@ phase_diff(wk57, wk58)
 
 #phase 3.9 to 3.10
 phase_diff(wk60, wk61)
-
 

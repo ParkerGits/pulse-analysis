@@ -2,6 +2,8 @@ import { TypographyH2 } from "./typography-h2";
 import buildWeeklyPlotUrl from "@/lib/buildWeeklyPlotUrl";
 import { TypographyP } from "./typography-p";
 import { TypographyAnchor } from "./typography-anchor";
+import { TypographyH3 } from "./typography-h3";
+import buildNationalPlotUrl from "@/lib/buildNationalPlotUrl";
 
 export default function DiscussionSection() {
   return (
@@ -9,6 +11,7 @@ export default function DiscussionSection() {
       <TypographyH2>Discussion</TypographyH2>
       <div>
         <TypographyP>
+          <TypographyH3>Racial and Ethnic Disparities</TypographyH3>
           The Weekly Metrics interactive data tool demonstrates stark and
           sustained disparities between racial and ethnic groups across several
           critical social and economic well-being indicators. These disparities
@@ -46,15 +49,18 @@ export default function DiscussionSection() {
           src={buildWeeklyPlotUrl("US", [28, 67], undefined, "inc_loss_rv")}
           className="flex-shrink min-w-0"
         />
-        Despite these revealed disparities, the moderate drops among lines in
-        the right plot indicate that rates of income loss have steadily
-        decreased since 2021. Indeed, several metrics indicate improving
-        conditions for all communities since the onset of the COVID-19 pandemic.
-        Plots of mortgage and rent payments, for example, suggest that
-        households in all communities are steadily catching up on these
-        expenses. Yet, these metrics exemplify striking disparities between
-        communities once more, as white households are significantly better off
-        than households among all other communities.
+        <TypographyP>
+          <TypographyH3>Signs of Sweeping Recovery</TypographyH3>
+          Despite these revealed disparities, the moderate drops among lines in
+          the right plot indicate that rates of income loss have steadily
+          decreased since 2021. Indeed, several metrics indicate improving
+          conditions for all communities since the onset of the COVID-19
+          pandemic. Plots of mortgage and rent payments, for example, suggest
+          that households in all communities are steadily catching up on these
+          expenses. Yet, these metrics exemplify striking disparities between
+          communities once more, as white households are significantly better
+          off than households among all other communities.
+        </TypographyP>
         <div className="flex flex-row items-center justify-between">
           <img
             src={buildWeeklyPlotUrl(
@@ -85,6 +91,7 @@ export default function DiscussionSection() {
         </TypographyP>
         <img src={buildWeeklyPlotUrl("US", [13, 67], undefined, "uninsured")} />
         <TypographyP>
+          <TypographyH3>Widespread Worsening Conditions</TypographyH3>
           In contrast to the ostensibly improving conditions associated with
           decreased rates of uninsured adults over the last four years, the
           percentage of adults with public health insurance has risen
@@ -126,59 +133,121 @@ export default function DiscussionSection() {
           />
         </div>
         <TypographyP>
-          Nevertheless, despite indicators of worsening conditions, rates of
-          depression and anxiety signs have fallen as time has distanced us from
-          the initial onset of the COVID-19 pandemic. The plots below
-          demonstrate that mental health among US adults was at its worst in
-          late 2020 before vaccines were made available and as the number of
-          confirmed COVID-19 cases was skyrocketing. Then, following the 2020
-          presidential election and the initial distribution of COVID-19
-          vaccines in the US, signs of mental health improved dramatically.
-          Still, amidst fluctuating COVID-19 cases, the announcement of new
-          threatening COVID-19 variants, and the increasingly salient economic
-          fallout of the pandemic, mental health steadily worsened until late
-          2023. Once more, these metrics indicate superior conditions among
-          white and Asian adults as they have consistently reported better
-          mental health than adults in black, Hispanic, and other nonwhite
-          communities throughout the entire pandemic and its fallout.
+          <TypographyH3>
+            Trends in Mental Health and Economic Well-Being
+          </TypographyH3>
+          Despite indicators of worsening conditions, rates of depression and
+          anxiety signs have fallen as time has distanced us from the initial
+          onset of the COVID-19 pandemic. Still, these metrics indicate superior
+          conditions among white and Asian adults as they have consistently
+          reported better mental health than adults in black, Hispanic, and
+          other nonwhite communities throughout the entire pandemic and its
+          fallout.
         </TypographyP>
-        <TypographyP>
-          At the beginning of Phase 4.0 of the Household Pulse Survey, rates of
-          depression and anxiety signs fell again dramatically. While the cause
-          of this drop is uncertain, it is worth noting that the location of the
-          relevant survey questions changed in Phase 4.0. Before this phase,
-          questions about mental health followed questions about the experience
-          of and recovery from natural disasters; now, they follow questions
-          about disability-related difficulty in communicating. Still, at around
-          20%, rates of depression and anxiety signs remain significantly higher
-          than they were in 2019 when, according to the{" "}
-          <TypographyAnchor href="https://www.cdc.gov/nchs/data/nhis/mental-health-monthly-508.pdf">
-            National Health Interview Study
-          </TypographyAnchor>
-          , only 10.8% of adults over the age of 18 reported symptoms of anxiety
-          disorder or depressive disorder.
-        </TypographyP>
-        <div className="flex flex-row items-center justify-between">
-          <img
-            src={buildWeeklyPlotUrl(
-              "US",
-              [13, 67],
-              undefined,
-              "depression_anxiety_signs",
-            )}
-            className="flex-shrink min-w-0"
-          />
-          <img
-            src={buildWeeklyPlotUrl(
-              "US",
-              [13, 67],
-              ["total"],
-              "depression_anxiety_signs",
-            )}
-            className="flex-shrink min-w-0"
-          />
-        </div>
+        <img
+          src={buildWeeklyPlotUrl(
+            "US",
+            [13, 67],
+            undefined,
+            "depression_anxiety_signs",
+          )}
+          className="flex-shrink min-w-0"
+        />
       </div>
+      <TypographyP>
+        The plot of depression and anxiety signs reveals that mental health
+        among US adults was at its worst in late 2020. This peak occured before
+        the distribution of vaccines and as the number of confirmed COVID-19
+        cases was skyrocketing. The United States also experienced significant
+        political unrest during this time following the murder of George Floyd
+        and the January 6 attack on the US Capitol.
+      </TypographyP>
+      <TypographyP>
+        In early 2021, following the conclusion of the 2020 presidential
+        election, the authorization and distribution of stimulus payments, and
+        the initial distribution of COVID-19 vaccines in the US, mental health
+        improved dramatically. Still, amidst fluctuating COVID-19 cases, the
+        announcement of new threatening COVID-19 variants, and the increasingly
+        salient economic fallout of the pandemic, mental health steadily
+        worsened until late 2023.
+      </TypographyP>
+      <TypographyP>
+        This pattern of adverse well-being metrics peaking in late 2020, dipping
+        over the next 3-6 months, and then steadily increasing again is
+        exhibited by food insufficiency, household expense difficulty, and
+        credit card and loan spending, too. Perhaps these indicators are
+        mutually conducive or share a common cause. As mentioned, the
+        intensifying threat of COVID-19 explains the initial peaks, and the
+        subsequent improvements occur as the threat of COVID infection is
+        subdued briefly. The steady increase in these metrics following this
+        trough may be explained by the announcement of new COVID-19 variants and
+        the increasingly widespread economic impact of the pandemic.
+      </TypographyP>
+      <div className="grid grid-cols-2">
+        <img
+          src={buildWeeklyPlotUrl(
+            "US",
+            [13, 67],
+            ["total"],
+            "food_insufficient",
+          )}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildWeeklyPlotUrl(
+            "US",
+            [13, 67],
+            ["total"],
+            "depression_anxiety_signs",
+          )}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildWeeklyPlotUrl("US", [13, 67], ["total"], "expense_dif")}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildWeeklyPlotUrl("US", [13, 67], ["total"], "spend_credit")}
+          className="flex-shrink min-w-0"
+        />
+      </div>
+      <TypographyP>
+        The plot of depression and anxiety signs also illustrates that at the
+        beginning of Phase 4.0, mental health improved dramatically. While the
+        cause of this sudden drop in depression and anxiety rates is uncertain,
+        it is worth noting that the location of the relevant survey questions
+        changed in Phase 4.0. Before this phase, questions about mental health
+        followed questions about the experience of and recovery from natural
+        disasters; now, they follow questions about disability-related
+        difficulty in communicating.
+      </TypographyP>
+      <TypographyP>
+        Still, it seems unlikely that a change in the question location would
+        contribute to such a considerable decrease. Moreover, metrics like food
+        insufficiency and household expense difficulty reveal a similar dip
+        starting in Phase 4.0. In this way, relevant economic and social
+        conditions may have actually improved since Phase 3.10 ended, leading to
+        better mental health outcomes. Nevertheless, at around 20%, rates of
+        depression and anxiety remain significantly higher than they were in
+        2019 when, according to the{" "}
+        <TypographyAnchor href="https://www.cdc.gov/nchs/data/nhis/mental-health-monthly-508.pdf">
+          National Health Interview Study
+        </TypographyAnchor>
+        , only 10.8% of adults over the age of 18 reported symptoms of anxiety
+        disorder or depressive disorder.
+      </TypographyP>
+      <TypographyP>
+        <TypographyH3>Geographic Trends</TypographyH3>
+        At the end of 2023 and Phase 3.10, households across the entire United
+        States reported experiencing significant food insufficiency.
+      </TypographyP>
+      <img
+        src={buildNationalPlotUrl(63, "total", "food_insufficient")}
+        className="flex-shrink min-w-0"
+      />
+      <TypographyP>
+        This impact was felt most deeply in southern states.
+      </TypographyP>
     </div>
   );
 }

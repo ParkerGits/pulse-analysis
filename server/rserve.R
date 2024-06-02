@@ -183,13 +183,15 @@ plot_state_map <- function(race, week, variable) {
       plot.title = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
       plot.subtitle = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
       legend.text = element_text(face = "italic", family = "Helvetica"),
+      legend.position = "bottom",
+      legend.key.width = unit(0.1, "npc")
     )
   }
 
   graph <- data |>
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
-    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent) +
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%"))) +
     national_map_theme() +
     labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
 
@@ -390,8 +392,8 @@ national_handler <- list(
 
     # get race from query string
     race <- query[["race"]]
-    # if null, default to first race
-    race_var <- all_races[1]
+    # if null, default to aggregate (total)
+    race_var <- "total"
     if (!is.null(race)) {
       race_var <- race
     }

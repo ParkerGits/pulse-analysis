@@ -158,21 +158,22 @@ plot_state_map <- function(race, week, variable) {
           axis.text=element_blank(),
           axis.ticks=element_blank(),
           axis.title=element_blank(),
-          legend.position="bottom")
+          legend.position="bottom",
+          legend.key.width=unit(0.1, "npc"))
   }
 
   graph <- data %>%
     mutate(average = round(mean, digits = 4)*100) %>%
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry),color = 'black') +
-    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks, limits = c(summary_breaks[1],summary_breaks[5]), labels = scales::percent)+
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%"))) +
     my_map_theme() +
     labs(title = paste('Percentage of people who', national_title_list[[variable]]))
 
   graph
 }
 
-plot_state_map("white", 45, "food_insufficient")
+plot_state_map("total", 63, "uninsured")
 std_err_significance |>
   filter(metric == "food_insufficient", week_num == "wk13", geography == "US") |>
   pull(mean)

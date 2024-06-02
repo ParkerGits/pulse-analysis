@@ -18,7 +18,7 @@ export default function DiscussionSection() {
           are most pronounced in the plots of food insufficiency and household
           expense difficulty, where the rates among white and Asian households
           consistently indicate significantly better circumstances than the
-          aggregate, and the rates among black, Hispanic, and other groups
+          aggregate, and the rates among Black, Hispanic, and other groups
           illustrate disproportionate hardship.
         </TypographyP>
         <div className="flex flex-row items-center justify-between">
@@ -38,10 +38,10 @@ export default function DiscussionSection() {
         </div>
         <TypographyP>
           This pattern of white and Asian groups faring better than average
-          while black, Hispanic, and other groups remain worse off manifests
+          while Black, Hispanic, and other groups remain worse off manifests
           regularly for other metrics, too. Plots of the income loss variable,
           for example, reveal consistently higher rates of income loss among
-          black, Hispanic, and other nonwhite households than white and Asian
+          Black, Hispanic, and other nonwhite households than white and Asian
           households. The plot below illustrates income loss by group for weeks
           following the Phase 3.1 question change until Phase 4.1.
         </TypographyP>
@@ -103,7 +103,7 @@ export default function DiscussionSection() {
           losing health insurance coverage. The sustained climb in public health
           insurance dependence among all communities suggests that these
           conditions are <em>still</em> worsening and that the effects of
-          COVID-19 are still widely felt. Once again, adults among black,
+          COVID-19 are still widely felt. Once again, adults among Black,
           Hispanic, and other nonwhite communities are disproportionately
           affected as they lean on public insurance services more than white and
           Asian adults. Moreover, despite enduring the highest uninsured rates,
@@ -140,7 +140,7 @@ export default function DiscussionSection() {
           anxiety signs have fallen as time has distanced us from the initial
           onset of the COVID-19 pandemic. Still, these metrics indicate superior
           conditions among white and Asian adults as they have consistently
-          reported better mental health than adults in black, Hispanic, and
+          reported better mental health than adults in Black, Hispanic, and
           other nonwhite communities throughout the entire pandemic and its
           fallout.
         </TypographyP>
@@ -237,7 +237,7 @@ export default function DiscussionSection() {
         disorder or depressive disorder.
       </TypographyP>
       <TypographyP>
-        <TypographyH3>Geographic Trends</TypographyH3>
+        <TypographyH3>Geographic Disparities in Nutrition</TypographyH3>
         At the end of 2023 and Phase 3.10, households across the entire United
         States reported experiencing significant food insufficiency.
       </TypographyP>
@@ -252,9 +252,71 @@ export default function DiscussionSection() {
           a study of food insecurity in the rural South
         </TypographyAnchor>
         , rural and low-income communities primarily comprise Black populations.
-        Thus, this geographic disparity represents once again the trend of
-        nonwhite, non-Asian communities facing disproportionate hardship
-        associated with the economic fallout of the COVID-19 pandemic.
+        Indeed, Black communities demonstrate significantly higher food
+        insufficiency rates than white populations, not only in the South but in
+        almost all regions.
+      </TypographyP>
+      <div className="flex flex-row items-center justify-between">
+        <img
+          src={buildNationalPlotUrl(63, "white", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildNationalPlotUrl(63, "black", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+      </div>
+      <TypographyP>
+        This disparity is further represented in side-by-side plots of food
+        insufficiency in Asian communities and communities of Hispanic or other
+        nonwhite, non-Asian populations.
+      </TypographyP>
+      <div className="flex flex-row items-center justify-between">
+        <img
+          src={buildNationalPlotUrl(63, "asian", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildNationalPlotUrl(63, "hispanic", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildNationalPlotUrl(63, "other", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+      </div>
+      <TypographyP>
+        This geographic disparity in food insufficiency once again reflects the
+        trend of nonwhite, non-Asian communities facing disproportionate
+        hardship associated with the economic fallout of the COVID-19 pandemic.
+        Notably, these disparities don't seem to correlate with SNAP spending:
+        regions that experience higher rates of food insufficiency are not
+        necessarily regions where SNAP spending is the highest. For example, in
+        the same period, Black communities in Wisconsin, Illinois, and Indiana
+        experienced some of the lowest food insufficiency rates in the country
+        yet demonstrated the highest rates of SNAP spending. Conversely, Black
+        populations in Texas represent some of the highest food insufficiency
+        rates during this period yet demonstrate relatively low rates of SNAP
+        spending.
+      </TypographyP>
+      <div className="flex flex-row items-center justify-between">
+        <img
+          src={buildNationalPlotUrl(63, "black", "food_insufficient")}
+          className="flex-shrink min-w-0"
+        />
+        <img
+          src={buildNationalPlotUrl(63, "black", "spend_snap")}
+          className="flex-shrink min-w-0"
+        />
+      </div>
+      <TypographyP>
+        One may be tempted to assume that regions with higher rates of food
+        insufficiency comprise more people leaning on SNAP. However, the plots
+        above may reflect an opposite association for some regions: populations
+        with less access to SNAP may experience higher rates of food
+        insufficiency. That is, access to support programs like SNAP, or lack
+        thereof, may contribute to food insufficiency rates instead of
+        vice-versa.
       </TypographyP>
     </div>
   );

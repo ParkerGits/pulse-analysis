@@ -246,7 +246,15 @@ export default function DiscussionSection() {
         className="flex-shrink min-w-0"
       />
       <TypographyP>
-        This impact was felt most deeply in southern states.
+        This impact was felt most deeply in the Southern United States, where,
+        according to{" "}
+        <TypographyAnchor href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10956714/">
+          a study of food insecurity in the rural South
+        </TypographyAnchor>
+        , rural and low-income communities primarily comprise Black populations.
+        Thus, this geographic disparity represents once again the trend of
+        nonwhite, non-Asian communities facing disproportionate hardship
+        associated with the economic fallout of the COVID-19 pandemic.
       </TypographyP>
     </div>
   );

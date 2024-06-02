@@ -191,7 +191,7 @@ plot_state_map <- function(race, week, variable) {
   graph <- data |>
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
-    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%"))) +
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%")), oob = scales::oob_squish) +
     national_map_theme() +
     labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
 

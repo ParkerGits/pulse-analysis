@@ -152,7 +152,12 @@ export default function MethodsSection() {
           mean in the Weekly Metrics visualization as a point, and the bands
           surrounding those points represent 95% confidence intervals computed
           from the standard errors. In the National Metrics visualization,
-          metric means are represented by the color fill of each state.
+          metric means are represented by the color fill of each state. The five
+          breaks in the color fill scale correspond to the minimum, first
+          quartile, mean, median, and third quartile. We've omitted the maximum
+          from this scale to reduce its spread and preserve more widely varying
+          colors between states. States with metric means that exceed the third
+          quartile are filled with the rightmost color on the scale's legend.
         </TypographyP>
         <TypographyP>
           Note that the numbers displayed in our results are estimates drawn

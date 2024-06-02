@@ -182,7 +182,7 @@ plot_state_map <- function(race, week, variable) {
       axis.title = element_blank(),
       plot.title = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
       plot.subtitle = element_text(family = "Helvetica", face = "bold", size = 10, hjust = 0.5),
-      legend.text = element_text(face = "italic", family = "Helvetica"),
+      legend.text = element_text(face = "italic", family = "Helvetica", size = 6),
       legend.position = "bottom",
       legend.key.width = unit(0.1, "npc")
     )
@@ -191,7 +191,13 @@ plot_state_map <- function(race, week, variable) {
   graph <- data |>
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry), color = "black") +
-    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%")), oob = scales::oob_squish) +
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(summary_breaks[1],summary_breaks[5]), labels = function(x) case_when(
+                                                                                                                                                                                                                                           x == summary_breaks[1] ~ scales::percent(x, suffix = "%\n(Min)"),
+                                                                                                                                                                                                                                           x == summary_breaks[2] ~ scales::percent(x, suffix = "%\n(1st Qu)"),
+                                                                                                                                                                                                                                           x == summary_breaks[3] ~ scales::percent(x, suffix = "%\n(Median)"),
+                                                                                                                                                                                                                                           x == summary_breaks[4] ~ scales::percent(x, suffix = "%\n(Mean)"),
+                                                                                                                                                                                                                                           x == summary_breaks[5] ~ scales::percent(x, suffix = "%+\n(3rd Qu.)"),
+                                                                                                                                                                                                                                           TRUE ~ scales::percent(x)), oob = scales::oob_squish) +
     national_map_theme() +
     labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
 

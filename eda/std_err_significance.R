@@ -166,12 +166,27 @@ plot_state_map <- function(race, week, variable) {
     mutate(average = round(mean, digits = 4)*100) %>%
     ggplot() +
     geom_sf(aes(fill = mean, geometry = geometry),color = 'black') +
-    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(0,summary_breaks[5]), labels = function(x) ifelse(x == summary_breaks[5], scales::percent(x, suffix = "%+"), scales::percent(x, suffix = "%")), oob = scales::oob_squish) +
+    scale_fill_gradient2(element_blank(), low = "#D7191C", mid = "#FFFFBF", high = "#2C7BB6", midpoint = summary_breaks[3], breaks = summary_breaks[1:5], limits = c(0,summary_breaks[5]), labels = function (x) case_when(
+      x == summary_breaks[1] ~ scales::percent(x, suffix = "%\n(Min)"),
+      x == summary_breaks[2] ~ scales::percent(x, suffix = "%\n(1st Qu)"),
+      x == summary_breaks[3] ~ scales::percent(x, suffix = "%\n(Median)"),
+      x == summary_breaks[4] ~ scales::percent(x, suffix = "%\n(Mean)"),
+      x == summary_breaks[5] ~ scales::percent(x, suffix = "%+\n(3rd Qu.)"),
+      TRUE ~ scales::percent(x)
+    ), oob = scales::oob_squish) +
     my_map_theme() +
     labs(title = paste('Percentage of people who', national_title_list[[variable]]))
 
   graph
 }
+
+function (x) case_when(
+  x == summary_breaks[1] ~ scales::percent(x, prefix = "Min: "),
+  x == summary_breaks[2] ~ scales::percent(x, prefix = "1st Qu: "),
+  x == summary_breaks[3] ~ scales::percent(x, prefix = "Median: "),
+  x == summary_breaks[4] ~ scales::percent(x, prefix = "Mean: "),
+  x == summary_breaks[5] ~ scales::percent(x, prefix = "3rd Qu: ")
+)
 
 plot_state_map("black", 63, "food_insufficient")
 std_err_significance |>

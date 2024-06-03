@@ -174,6 +174,8 @@ plot_state_map <- function(race, week, variable) {
     filter(week_num == week_str, race_var == race) |>
     left_join(us_states, c('geography'='iso_3166_2'))
 
+  date_title <- data[1,] |> pull(date_int)
+
   national_map_theme <- function() {
     theme(
       panel.background = element_blank(),
@@ -199,7 +201,7 @@ plot_state_map <- function(race, week, variable) {
                                                                                                                                                                                                                                            x == summary_breaks[5] ~ scales::percent(x, suffix = "%+\n(3rd Qu.)"),
                                                                                                                                                                                                                                            TRUE ~ scales::percent(x)), oob = scales::oob_squish) +
     national_map_theme() +
-    labs(title = metric_title_list[[variable]], subtitle = str_glue("Week {week}, Race = {race}"))
+    labs(title = metric_title_list[[variable]], subtitle = str_glue("{date_title}, Week {week}, Race = {race}"))
 
   graph
 }

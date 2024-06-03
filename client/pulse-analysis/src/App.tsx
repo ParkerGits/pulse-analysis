@@ -3,6 +3,7 @@ import AbstractSection from "./components/abstract-section";
 import IntroductionSection from "./components/introduction-section";
 import ResultsSection from "./components/results-section";
 import MethodsSection from "./components/methods-section";
+import RelatedLinksSection from "./components/related-links-section";
 
 export default function Component() {
   return (
@@ -31,6 +32,7 @@ export default function Component() {
           <MethodsSection />
           <ResultsSection />
           <DiscussionSection />
+          <RelatedLinksSection />
         </div>
       </div>
     </div>

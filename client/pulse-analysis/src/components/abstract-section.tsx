@@ -19,7 +19,7 @@ export default function AbstractSection() {
           still impacted by and recovering from the pandemic. We introduce an
           interactive data visualization tool that illustrates changes in
           condition-indicating metrics like food insufficiency, spending,
-          insurance, and income across various times, geographies, and
+          insurance, and income across various times, geographies, races, and
           ethnicities. Using this tool, we demonstrate the nation's uneven
           recovery, showing that social and economic disparities between racial,
           ethnic, and geographic communities remain steady. Across nearly all

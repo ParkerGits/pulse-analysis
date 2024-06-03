@@ -326,7 +326,7 @@ export default function DiscussionSection() {
         insufficiency in Asian communities and communities of Hispanic or other
         nonwhite, non-Asian populations.
       </TypographyP>
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center justify-between h-1/2">
         <img
           src={buildNationalPlotUrl(63, "asian", "food_insufficient")}
           className="flex-shrink min-w-0"
@@ -335,9 +335,11 @@ export default function DiscussionSection() {
           src={buildNationalPlotUrl(63, "hispanic", "food_insufficient")}
           className="flex-shrink min-w-0"
         />
+      </div>
+      <div className="flex flex-row items-center justify-center">
         <img
           src={buildNationalPlotUrl(63, "other", "food_insufficient")}
-          className="flex-shrink min-w-0"
+          className="flex-shrink min-w-0 h-64"
         />
       </div>
       <TypographyP>

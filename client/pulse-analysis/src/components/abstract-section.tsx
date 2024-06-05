@@ -20,14 +20,21 @@ export default function AbstractSection() {
           interactive data visualization tool that illustrates changes in
           condition-indicating metrics like food insufficiency, spending,
           insurance, and income across various times, geographies, races, and
-          ethnicities. Using this tool, we demonstrate the nation's uneven
-          recovery, showing that social and economic disparities between racial,
-          ethnic, and geographic communities remain steady. Across nearly all
-          metrics, white communities consistently fare better than average,
-          while recovery among Black, Hispanic, and nonwhite, non-Asian
-          communities seldom closes the gap. Moreover, while some metrics
-          demonstrate improvements for the entire nation, others indicate how
-          conditions have worsened for everybody.
+          ethnicities. Using this tool, we consider how households in multiple
+          communities throughout the United States are still impacted by and
+          recovering from the COVID-19 pandemic. Our results demonstrate the
+          nation's uneven recovery, illustrating steady social and economic
+          disparities between racial, ethnic, and geographic communities. We
+          show that across nearly all metrics, white households consistently
+          fare better than average, while recovery among Black, Hispanic, and
+          other nonwhite, non-Asian households seldom closes the gap. Although
+          some metrics demonstrate nationwide improvements, others indicate how
+          conditions have worsened for everybody. We also explore compelling
+          associations between mental health outcomes, political allegiance, and
+          indicators of economic well-being. Lastly, we highlight geographic
+          disparities in food sufficiency that again reflect disproportionate
+          hardship between racial and ethnic groups amid the fallout from the
+          COVID-19 pandemic.
         </TypographyP>
       </div>
     </div>

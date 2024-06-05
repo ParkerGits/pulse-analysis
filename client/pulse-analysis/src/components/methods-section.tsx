@@ -96,7 +96,7 @@ export default function MethodsSection() {
         <TypographyP>
           <TypographyH3>Variables</TypographyH3>
           The race and ethnicity categories considered in this report mirror
-          those created by the UrbanInstitute and used in the{" "}
+          those created by the Urban Institute and used in the{" "}
           <TypographyAnchor href="https://www.census.gov/programs-surveys/household-pulse-survey/data/tables.html">
             Household Pulse Survey Data Tables
           </TypographyAnchor>
@@ -112,7 +112,7 @@ export default function MethodsSection() {
           The metrics considered in this analysis are drawn from those featured
           in the{" "}
           <TypographyAnchor href="https://www.urban.org/data-tools/tracking-covid-19s-effects-race-and-ethnicity-questionnaire-two">
-            UrbanInstitute Questionnaire Two analysis
+            Urban Institute Questionnaire Two analysis
           </TypographyAnchor>{" "}
           and are as follows.
         </TypographyP>
@@ -127,9 +127,9 @@ export default function MethodsSection() {
           consult the data dictionary below.
         </TypographyP>
         <TypographyP>
-          The UrbanInstitute cites significant changes in Household Pulse Survey
-          collection periods and questionnaires as reasons to omit Phase 1 data
-          from their analysis of Phase 2 through Phase 3.5 data. We have
+          The Urban Institute cites significant changes in Household Pulse
+          Survey collection periods and questionnaires as reasons to omit Phase
+          1 data from their analysis of Phase 2 through Phase 3.5 data. We have
           followed suit and do not consider Phase 1 data in our results.
           However, despite the four-week collection and dissemination cycle
           introduced in Phase 4.0, our analysis includes data from Phase 4.0 and
@@ -248,10 +248,10 @@ export default function MethodsSection() {
           geography.
         </TypographyP>
         <TypographyP>
-          The UrbanInstitute developed and made available the original methods
+          The Urban Institute developed and made available the original methods
           for computing each metric statistic in{" "}
           <TypographyAnchor href="https://github.com/UrbanInstitute/pulse_covid_feature_phase2">
-            the associated UrbanInstitute GitHub repository
+            the associated Urban Institute GitHub repository
           </TypographyAnchor>
           . We have forked, modified, and extended this original code to support
           data in later phases and create our data visualization tool. This new

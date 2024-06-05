@@ -1,4 +1,4 @@
-# Generate cleaned Public Use File according to UrbanInstitute variables
+# Generate cleaned Public Use File according to Urban Institute variables
 library(tidyverse)
 library(readxl)
 library(testit)
@@ -916,4 +916,3 @@ phase_diff(wk57, wk58)
 
 #phase 3.9 to 3.10
 phase_diff(wk60, wk61)
-

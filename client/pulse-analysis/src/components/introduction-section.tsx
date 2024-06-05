@@ -10,14 +10,14 @@ export default function IntroductionSection() {
         <TypographyP>
           The Household Pulse Survey is an online survey established by the US
           Census Bureau to identify emergent economic and social issues facing
-          households in America. The survey aims to deploy quickly and
-          efficiently, providing near real-time insights to inform meaningful
-          action. Survey questions concern household demographics alongside
-          economic and social well-being indicators like employment, food
-          sufficiency, and housing security. The survey's initial phases began
-          on April 23, 2020, shortly after the onset of the COVID-19 pandemic in
-          the United States, and has served as a vital measure of its effects
-          throughout.
+          households in America. The survey aims to collect and disseminate
+          results quickly and efficiently, providing near real-time insights to
+          inform meaningful action. Survey questions concern household
+          demographics alongside economic and social well-being indicators like
+          employment, food sufficiency, and housing security. The survey's
+          initial phases began on April 23, 2020, shortly after the onset of the
+          COVID-19 pandemic in the United States, and has served as a vital
+          measure of its effects throughout.
         </TypographyP>
         <TypographyP>
           By considering data from{" "}
@@ -30,12 +30,12 @@ export default function IntroductionSection() {
           </TypographyAnchor>{" "}
           of the Household Pulse Survey, the{" "}
           <TypographyAnchor href="https://www.urban.org/">
-            UrbanInstitute
+            Urban Institute
           </TypographyAnchor>{" "}
           has demonstrated the impact of COVID-19 on economic disparities
           between racial and ethnic groups. Still, two years later, these
           disparities are persisting and deepening, with non-white groups
-          shouldering much of the burden. This work extends the UrbanInstitute
+          shouldering much of the burden. This work extends the Urban Institute
           analyses with an interactive tool summarizing data through Phase 4.1
           (April 29, 2024) of the{" "}
           <TypographyAnchor href="https://www.census.gov/data/experimental-data-products/household-pulse-survey.html">
@@ -44,9 +44,9 @@ export default function IntroductionSection() {
           , illustrating our nation's uneven recovery from the pandemic and how
           its effects continue to disproportionately impact particular racial,
           ethnic, and geographic communities today. We analyze several of the
-          variables considered in the UrbanInstitute analyses and measured since
-          the beginning of Phase 2 of the Household Pulse Survey in August 2020
-          as we seek to answer the question,{" "}
+          variables considered in the Urban Institute analyses and measured
+          since the beginning of Phase 2 of the Household Pulse Survey in August
+          2020 as we seek to answer the question,{" "}
           <strong>
             How are households in various communities throughout the United
             States still impacted by and recovering from the COVID-19 pandemic?

@@ -107,11 +107,11 @@ export default function DiscussionSection() {
           In contrast to the ostensibly improving conditions associated with
           decreased rates of uninsured adults over the last four years, the
           percentage of adults with public health insurance has risen
-          considerably. The UrbanInstitute attributes this increase to the
+          considerably. The Urban Institute attributes this increase to the
           economic fallout associated with COVID-19, which has reduced the
           availability of employer-based health insurance and thus raised the
           need for public options like Medicare, Medicaid, and VA Health
-          Insurance. Consequently, the UrbanInstitute asserts, more people risk
+          Insurance. Consequently, the Urban Institute asserts, more people risk
           losing health insurance coverage. The sustained climb in public health
           insurance dependence among all communities suggests that these
           conditions are <em>still</em> worsening and that the effects of
@@ -292,7 +292,7 @@ export default function DiscussionSection() {
         disorder or depressive disorder.
       </TypographyP>
       <TypographyP>
-        <TypographyH3>Geographic Disparities in Nutrition</TypographyH3>
+        <TypographyH3>Geographic Disparities in Food Sufficiency</TypographyH3>
         At the end of 2023 and Phase 3.10, households across the entire United
         States reported experiencing significant food insufficiency.
       </TypographyP>

@@ -24,13 +24,10 @@ export default function AbstractSection() {
           recovery, showing that social and economic disparities between racial,
           ethnic, and geographic communities remain steady. Across nearly all
           metrics, white communities consistently fare better than average,
-          while recovery among black and brown communities seldom closes the
-          gap. Moreover, while some metrics demonstrate improvements for the
-          entire nation, others indicate how conditions have worsened for
-          everybody. In response, we recommend that these results inform
-          policies and decisions that focus on improving particular worsening
-          conditions for specific communities that have undergone
-          disproportionate impact and struggle to recover.
+          while recovery among Black, Hispanic, and nonwhite, non-Asian
+          communities seldom closes the gap. Moreover, while some metrics
+          demonstrate improvements for the entire nation, others indicate how
+          conditions have worsened for everybody.
         </TypographyP>
       </div>
     </div>

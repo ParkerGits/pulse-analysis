@@ -42,25 +42,25 @@ metrics <- c(
 )
 
 metric_title_list <- list(
-  depression_anxiety_signs = "Percentage of adults that have shown depression\n or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks (phases 3.2-4.1)",
+  depression_anxiety_signs = "Percentage of adults that have shown depression\n or anxiety signs in the past week (phases 2, 3, and 3.1)\nor in the last two weeks beginning July 21, 2021 (phases 3.2-4.1)",
   eviction_risk = "Percentage of adults in households at high risk\nof being evicted in the next two months",
-  expect_inc_loss = "Percentage of adults in households where at least one person\nexpects to lose employment income in the next four weeks\n(question removed in phase 3.2)",
+  expect_inc_loss = "Percentage of adults in households where at least one person\nexpects to lose employment income in the next four weeks\n(question removed in phase 3.2; July 21, 2021)",
   expense_dif = "Percentage of adults in households have had difficulty\npaying for usual household expenses",
   food_insufficient = "Percentage of adults in households where there was\noften or sometimes not enough food in the past week",
   foreclosure_risk = "Percentage of adults in households at high risk\nof being foreclosed in the next two months",
-  inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks (phases 3.1-4.1)",
+  inc_loss_rv = "Percentage of adults in households where at least one person\nhas lost employment income since March 13, 2020 (phases 2 and 3)\nor in the last four weeks beginning April 14, 2021 (phases 3.1-4.1)",
   insured_public = "Percentage of adults under 65 that have public health insurance\n(Medicare, Medicaid, or VA Health Insurance)",
-  mentalhealth_unmet = "Percentage of adults that needed but did not get\ncounseling or therapy from a mental health professional in the past 4 weeks,\nfor any reason (question removed in phase 3.5)",
+  mentalhealth_unmet = "Percentage of adults that needed but did not get\ncounseling or therapy from a mental health professional in the past 4 weeks,\nfor any reason (question removed on April 14, 2021 in phase 3.5)",
   mortgage_caughtup = "Percentage of adults in households that are\ncurrently caught up on mortgage payments",
-  mortgage_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their mortgage next month\nor have deferred payment (question removed in phase 3.5)",
+  mortgage_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their mortgage next month\nor have deferred payment (question removed on June 1, 2022 in phase 3.5)",
   rent_caughtup = "Percentage of adults in households that are\ncurrently caught up on rent payments",
-  rent_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their rent next month\nor have deferred payment (question removed in phase 3.5)",
-  spend_credit = "Percentage of adults that have used credit cards or loans spending to meet\ntheir weekly needs in the past 7 days\n(question removed in phase 4.0)",
-  spend_savings = "Percentage of adults that used savings or sold assets to meet\ntheir spending needs in the past week\n(question removed in phase 4.0)",
-  spend_snap = "Percentage of adults that have used SNAP to meet\ntheir spending needs in the past 7 days\n(question removed in phase 4.0)",
-  spend_stimulus = "Percentage of adults that used stimulus payments to meet\ntheir spending needs in the past week\n(question removed in phase 4.0)",
-  spend_ui = "Percentage of adults that used unemployment insurance (UI) benefits\nto meet their spending needs in the past week\n(question removed in phase 4.0)",
-  telework = "Percentage of adults in households where at least one adult\nwhose work is typically in-person has begun working online\nbecause of the COVID-19 pandemic (question removed in phase 3.1)",
+  rent_not_conf = "Percentage of adults in households that have\nno or slight confidence they can pay their rent next month\nor have deferred payment (question removed on June 1, 2022 in phase 3.5)",
+  spend_credit = "Percentage of adults that have used credit cards or loans spending to meet\ntheir weekly needs in the past 7 days\n(question removed on January 9, 2024 in phase 4.0)",
+  spend_savings = "Percentage of adults that used savings or sold assets to meet\ntheir spending needs in the past week\n(question removed on January 9, 2024 in phase 4.0)",
+  spend_snap = "Percentage of adults that have used SNAP to meet\ntheir spending needs in the past 7 days\n(question removed on January 9, 2024 in phase 4.0)",
+  spend_stimulus = "Percentage of adults that used stimulus payments to meet\ntheir spending needs in the past week\n(question removed on January 9, 2024 in phase 4.0)",
+  spend_ui = "Percentage of adults that used unemployment insurance (UI) benefits\nto meet their spending needs in the past week\n(question removed on January 9, 2024 in phase 4.0)",
+  telework = "Percentage of adults in households where at least one adult\nwhose work is typically in-person has begun working online\nbecause of the COVID-19 pandemic (question removed on April 14, 2021 in phase 3.1)",
   uninsured = "Percentage of adults under 65 that have no health insurance\n(or only have insurance through the Indian Health Service)"
 )
 
@@ -201,7 +201,7 @@ plot_state_map <- function(race, week, variable) {
                                                                                                                                                                                                                                            x == summary_breaks[5] ~ scales::percent(x, suffix = "%+\n(3rd Qu.)"),
                                                                                                                                                                                                                                            TRUE ~ scales::percent(x)), oob = scales::oob_squish) +
     national_map_theme() +
-    labs(title = metric_title_list[[variable]], subtitle = str_glue("{date_title}, Week {week}, Race = {race}"))
+    labs(title = metric_title_list[[variable]], subtitle = str_glue("{date_title}, Race = {race}"))
 
   graph
 }
